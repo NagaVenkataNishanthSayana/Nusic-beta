@@ -1,4 +1,4 @@
 package com.example.Nusic.DAO;
 
-public class PlayListDAO {
+public class PlayListDAO extends DAO{
 }

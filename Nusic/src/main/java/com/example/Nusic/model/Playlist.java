@@ -16,11 +16,11 @@ public class Playlist {
     private String playListName;
 
     //Mapping one-many
-//    @ManyToOne
-//    private User user;
+    @ManyToOne
+    private User user;
 
     //Mapping one-many
-    @ManyToMany(mappedBy = "song")
+    @ManyToMany(mappedBy = "playlists")
     List<Song> playListSongs;
 
     public List<Song> getPlayListSongs() {
@@ -39,13 +39,13 @@ public class Playlist {
         this.id = id;
     }
 
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 
 

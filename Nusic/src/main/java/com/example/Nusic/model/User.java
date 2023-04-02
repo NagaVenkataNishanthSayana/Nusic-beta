@@ -16,8 +16,8 @@ public class User {
     private String email;
 
     //Mappings one-many
-//    @OneToMany(mappedBy = "user")
-//    private Set<Playlist> playlists;
+    @OneToMany(mappedBy = "user")
+    private Set<Playlist> playlists;
 
     public Long getId() {
         return id;
@@ -27,13 +27,13 @@ public class User {
         this.id = id;
     }
 
-//    public Set<Playlist> getPlaylists() {
-//        return playlists;
-//    }
-//
-//    public void setPlaylists(Set<Playlist> playlists) {
-//        this.playlists = playlists;
-//    }
+    public Set<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(Set<Playlist> playlists) {
+        this.playlists = playlists;
+    }
 
     public User() {
     }

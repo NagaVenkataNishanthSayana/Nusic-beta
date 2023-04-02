@@ -32,7 +32,7 @@ public class HibernateUtil {
 
             return new Configuration()
                     .setProperties(properties)
-                    .addAnnotatedClass(User.class)
+                    .addAnnotatedClass(User.class).addAnnotatedClass(Playlist.class).addAnnotatedClass(Song.class).addAnnotatedClass(Album.class).addAnnotatedClass(Admin.class)
                     .buildSessionFactory();
 
         } catch (Throwable ex) {

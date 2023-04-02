@@ -2,6 +2,7 @@ package com.example.Nusic.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -9,17 +10,44 @@ public class Playlist {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String playListName;
 
-    //Mapping one-one
-    private long userId;
-
+    //Mapping one-many
+//    @ManyToOne
+//    private User user;
 
     //Mapping one-many
-    Set<Integer> playListSongs;
+    @ManyToMany(mappedBy = "song")
+    List<Song> playListSongs;
+
+    public List<Song> getPlayListSongs() {
+        return playListSongs;
+    }
+
+    public void setPlayListSongs(List<Song> playListSongs) {
+        this.playListSongs = playListSongs;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+//    public User getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(User user) {
+//        this.user = user;
+//    }
+
+
 
     public String getPlayListName() {
         return playListName;
@@ -29,11 +57,4 @@ public class Playlist {
         this.playListName = playListName;
     }
 
-    public long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
 }

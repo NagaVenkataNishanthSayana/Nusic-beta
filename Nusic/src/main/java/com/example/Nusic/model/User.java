@@ -1,9 +1,6 @@
 package com.example.Nusic.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
@@ -11,7 +8,7 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fistName;
     private String lastname;
@@ -19,15 +16,24 @@ public class User {
     private String email;
 
     //Mappings one-many
-    private Set<Integer> playlists;
+//    @OneToMany(mappedBy = "user")
+//    private Set<Playlist> playlists;
 
-    public Set<Integer> getPlaylists() {
-        return playlists;
+    public Long getId() {
+        return id;
     }
 
-    public void setPlaylists(Set<Integer> playlists) {
-        this.playlists = playlists;
+    public void setId(Long id) {
+        this.id = id;
     }
+
+//    public Set<Playlist> getPlaylists() {
+//        return playlists;
+//    }
+//
+//    public void setPlaylists(Set<Playlist> playlists) {
+//        this.playlists = playlists;
+//    }
 
     public User() {
     }

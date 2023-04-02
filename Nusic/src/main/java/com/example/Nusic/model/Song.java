@@ -1,9 +1,8 @@
 package com.example.Nusic.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 public class Song {
@@ -14,8 +13,30 @@ public class Song {
 
     private String albumID;
 
+    @ManyToMany
+    private List<Playlist> playlists;
+
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+
+    public void setPlaylists(List<Playlist> playlists) {
+        this.playlists = playlists;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "playlist_id", nullable = false)
+    private Album album;
     @Id
-   @GeneratedValue(strategy = GenerationType.UUID)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     public String getAlbumID() {

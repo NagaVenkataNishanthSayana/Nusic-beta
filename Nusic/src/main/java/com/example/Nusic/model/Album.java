@@ -1,9 +1,6 @@
 package com.example.Nusic.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
@@ -19,7 +16,8 @@ public class Album {
     private String leadArtist;
 
     //mappings one-many
-    private Set<String> songNames;
+    @OneToMany(mappedBy = "song")
+    private Set<Song> songNames;
 
 
 

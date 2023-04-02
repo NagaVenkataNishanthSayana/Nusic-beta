@@ -21,4 +21,6 @@ public class UserController {
         userService.saveUser(user);
         return "New User is created";
     }
+
+
 }

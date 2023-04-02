@@ -13,6 +13,8 @@ public class User {
     private String fistName;
     private String lastname;
     private String password;
+
+    @Column(unique=true)
     private String email;
 
     //Mappings one-many

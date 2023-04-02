@@ -1,9 +1,12 @@
 package com.example.Nusic.DAO;
 
 import com.example.Nusic.model.User;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import jdk.jshell.spi.ExecutionControl;
 import org.hibernate.HibernateException;
 import com.example.Nusic.exception.UserException;
+import org.hibernate.annotations.NamedQuery;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -27,6 +30,7 @@ public class UserDAO extends DAO{
             throw new UserException("Exception while creating user: " + e.getMessage());
         }
     }
+
 
     public void delete(User user) throws UserException {
         try {

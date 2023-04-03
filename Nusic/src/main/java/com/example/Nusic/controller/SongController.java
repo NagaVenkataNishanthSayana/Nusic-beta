@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/songs")
+@RequestMapping("/song")
 public class SongController {
 
     @Autowired
@@ -24,6 +24,9 @@ public class SongController {
     public List<Song> getSongByPlayListId(@PathVariable Long id) {
         return songService.getSongByPlayListId(id);
     }
+
+    @GetMapping("/AllSongs")
+    public List<String> getAllSongs(){return songService.getAllSongs();}
 
     @PostMapping("/")
     public Song createSong(@RequestBody Song song) {

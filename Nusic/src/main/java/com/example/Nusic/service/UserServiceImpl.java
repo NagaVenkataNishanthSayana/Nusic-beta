@@ -16,4 +16,9 @@ public class UserServiceImpl implements UserService{
     public User saveUser(User user) throws UserException {
         return userDAO.create(user);
     }
+
+    @Override
+    public String getUser(String email) {
+        return null;
+    }
 }

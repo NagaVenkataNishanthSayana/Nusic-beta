@@ -25,12 +25,17 @@ public class SongController {
         return songService.getSongByPlayListId(id);
     }
 
+    @GetMapping("/{Album_id}")
+    public List<Song> getSongByAlbumId(@PathVariable Long id) {
+        return songService.getSongByAlbumId(id);
+    }
+
     @GetMapping("/AllSongs")
-    public List<String> getAllSongs(){return songService.getAllSongs();}
+    public List<Song> getAllSongs(){return songService.getAllSongs();}
 
     @PostMapping("/")
-    public Song createSong(@RequestBody Song song) {
-        return songService.createSong(song);
+    public Song addSong(@RequestBody Song song) {
+        return songService.addSong(song);
     }
 
     @PutMapping("/{id}")

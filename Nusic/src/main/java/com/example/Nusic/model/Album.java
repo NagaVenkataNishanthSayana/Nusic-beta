@@ -5,14 +5,20 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "albums")
 public class Album {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "album_name",nullable = false,unique = true)
     private String albumName;
+
+    @Column(name = "year_of_release",nullable = false)
     private int yearOfRelease;
+
+    @Column(name ="lead_artist",nullable = false)
     private String leadArtist;
 
     //mappings one-many

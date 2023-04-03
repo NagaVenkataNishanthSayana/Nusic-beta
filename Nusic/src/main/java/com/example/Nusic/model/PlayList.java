@@ -2,33 +2,36 @@ package com.example.Nusic.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
 import java.util.Set;
 
 @Entity
-public class Playlist {
+@Table(name = "playlists")
+public class PlayList {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "playlist_name",nullable = false)
     private String playListName;
 
     //Mapping one-many
     @ManyToOne
+    @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
     //Mapping one-many
-    @ManyToMany(mappedBy = "playlists")
-    List<Song> playListSongs;
+    @ManyToMany
+    @JoinTable(name = "playlist_tracks",joinColumns = @JoinColumn(name = "playlist_id",nullable = false),inverseJoinColumns = @JoinColumn(name = "song_id",nullable = false))
+    Set<Song> songs;
 
-    public List<Song> getPlayListSongs() {
-        return playListSongs;
+    public Set<Song> getSongs() {
+        return songs;
     }
 
-    public void setPlayListSongs(List<Song> playListSongs) {
-        this.playListSongs = playListSongs;
+    public void setSongs(Set<Song> songs) {
+        this.songs = songs;
     }
 
     public Long getId() {

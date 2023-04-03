@@ -19,7 +19,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Song createSong(Song song) {
+    public Song addSong(Song song) {
         return null;
     }
 
@@ -39,7 +39,12 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public List<String> getAllSongs() {
+    public List<Song> getAllSongs() {
         return songDAO.getAllSongs();
+    }
+
+    @Override
+    public List<Song> getSongByAlbumId(Long id) {
+        return null;
     }
 }

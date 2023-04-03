@@ -10,7 +10,7 @@ public interface SongService {
 
     Song getSongById(Long id);
 
-    Song createSong(Song song);
+    Song addSong(Song song);
 
     Song updateSong(Long id, Song song);
 
@@ -18,5 +18,7 @@ public interface SongService {
 
     List<Song> getSongByPlayListId(Long id);
 
-    List<String> getAllSongs();
+    List<Song> getAllSongs();
+
+    List<Song> getSongByAlbumId(Long id);
 }

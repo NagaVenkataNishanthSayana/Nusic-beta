@@ -5,22 +5,27 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity
+@Table(name = "songs")
 public class Song {
 
+
+    @Column(name = "song_path",nullable = false)
     private String songPath;
+
+    @Column(name = "song_name",nullable = false)
     private String songName;
+
+    @Column(nullable = false)
     private String artists;
 
-    private String albumID;
+    @ManyToMany(mappedBy = "songs")
+    private List<PlayList> playlists;
 
-    @ManyToMany
-    private List<Playlist> playlists;
-
-    public List<Playlist> getPlaylists() {
+    public List<PlayList> getPlaylists() {
         return playlists;
     }
 
-    public void setPlaylists(List<Playlist> playlists) {
+    public void setPlaylists(List<PlayList> playlists) {
         this.playlists = playlists;
     }
 
@@ -33,19 +38,12 @@ public class Song {
     }
 
     @ManyToOne
-    @JoinColumn(name = "playlist_id", nullable = false)
+    @JoinColumn(name = "album_id",nullable = false)
     private Album album;
     @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public String getAlbumID() {
-        return albumID;
-    }
-
-    public void setAlbumID(String albumID) {
-        this.albumID = albumID;
-    }
 
     public String getSongPath() {
         return songPath;

@@ -2,10 +2,8 @@ package com.example.Nusic.util;
 
 import com.example.Nusic.model.*;
 import org.hibernate.SessionFactory;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.cfg.Environment;
-import org.hibernate.service.ServiceRegistry;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.util.Properties;
@@ -32,7 +30,7 @@ public class HibernateUtil {
 
             return new Configuration()
                     .setProperties(properties)
-                    .addAnnotatedClass(User.class).addAnnotatedClass(Playlist.class).addAnnotatedClass(Song.class).addAnnotatedClass(Album.class).addAnnotatedClass(Admin.class)
+                    .addAnnotatedClass(User.class).addAnnotatedClass(PlayList.class).addAnnotatedClass(Song.class).addAnnotatedClass(Album.class).addAnnotatedClass(Admin.class)
                     .buildSessionFactory();
 
         } catch (Throwable ex) {

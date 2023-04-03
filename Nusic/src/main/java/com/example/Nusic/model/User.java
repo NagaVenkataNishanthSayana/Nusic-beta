@@ -5,21 +5,28 @@ import jakarta.persistence.*;
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "first_name",nullable = false)
     private String fistName;
+
+    @Column(name = "last_name",nullable = false)
     private String lastname;
+
+    @Column(name ="password",nullable = false)
     private String password;
 
-    @Column(unique=true)
+    @Column(unique=true,nullable = false)
     private String email;
 
     //Mappings one-many
     @OneToMany(mappedBy = "user")
-    private Set<Playlist> playlists;
+    private Set<PlayList> playlists;
 
     public Long getId() {
         return id;
@@ -29,11 +36,11 @@ public class User {
         this.id = id;
     }
 
-    public Set<Playlist> getPlaylists() {
+    public Set<PlayList> getPlaylists() {
         return playlists;
     }
 
-    public void setPlaylists(Set<Playlist> playlists) {
+    public void setPlaylists(Set<PlayList> playlists) {
         this.playlists = playlists;
     }
 

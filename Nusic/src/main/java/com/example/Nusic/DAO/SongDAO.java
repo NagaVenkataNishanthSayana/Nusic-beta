@@ -13,12 +13,14 @@ public class SongDAO extends DAO{
     public SongDAO() {
     }
 
-    public List<String> getAllSongs(){
-        List<String> songs = getSession().createNativeQuery(
-                        "select songPath from Song ",
-                        String.class)
+    public List<Song> getAllSongs(){
+        List<Song> songs = getSession().createNativeQuery(
+                        "select * from Song ",Song.class
+                        )
                 .getResultList();
-
+        for(Song s:songs){
+            System.out.println(s);
+        }
         return songs;
     }
 }

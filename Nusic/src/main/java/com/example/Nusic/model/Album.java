@@ -12,7 +12,8 @@ public class Album {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "album_name",nullable = false,unique = true)
+    @Column(name = "album_name",nullable = false,unique = true,length = 25)
+
     private String albumName;
 
     @Column(name = "year_of_release",nullable = false)
@@ -22,8 +23,8 @@ public class Album {
     private String leadArtist;
 
     //mappings one-many
-    @OneToMany(mappedBy = "album")
-    private Set<Song> songNames;
+    @OneToMany(mappedBy = "album",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private Set<Song> songs;
 
     public Long getId() {
         return id;
@@ -33,12 +34,12 @@ public class Album {
         this.id = id;
     }
 
-    public Set<Song> getSongNames() {
-        return songNames;
+    public Set<Song> getSongs() {
+        return songs;
     }
 
-    public void setSongNames(Set<Song> songNames) {
-        this.songNames = songNames;
+    public void setSongs(Set<Song> songs) {
+        this.songs = songs;
     }
 
     public String getAlbumName() {

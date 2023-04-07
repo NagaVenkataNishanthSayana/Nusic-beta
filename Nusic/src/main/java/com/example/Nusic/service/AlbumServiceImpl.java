@@ -1,18 +1,24 @@
 package com.example.Nusic.service;
 
+import com.example.Nusic.DAO.AlbumDAO;
 import com.example.Nusic.model.Album;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AlbumServiceImpl implements AlbumService {
+
+    @Autowired
+    AlbumDAO albumDAO;
+
     @Override
-    public Album getAlbumById(Long id) {
-        return null;
+    public Album getAlbumById(Long id) throws Exception {
+        return albumDAO.getByAlbumId(id);
     }
 
     @Override
-    public Album createAlbum(Album album) {
-        return null;
+    public Album createAlbum(Album album) throws Exception {
+        return albumDAO.create(album);
     }
 
     @Override

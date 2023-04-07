@@ -21,7 +21,7 @@ public class User {
     @Column(name ="password",nullable = false)
     private String password;
 
-    @Column(unique=true,nullable = false)
+    @Column(unique=true,nullable = false,length = 50)
     private String email;
 
     //Mappings one-many

@@ -22,7 +22,7 @@ public class HibernateUtil {
             properties.put(Environment.USER, "root");
             properties.put(Environment.PASS, "Testuser@1");
             properties.put(Environment.FORMAT_SQL, "true");
-            properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
+            properties.put(Environment.DIALECT, "org.hibernate.dialect.MySQLDialect");
             properties.put(Environment.SHOW_SQL, "true");
             properties.put(Environment.CURRENT_SESSION_CONTEXT_CLASS, "thread");
             properties.put(Environment.HBM2DDL_AUTO, "update");

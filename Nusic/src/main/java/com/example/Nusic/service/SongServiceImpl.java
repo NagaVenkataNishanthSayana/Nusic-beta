@@ -1,5 +1,6 @@
 package com.example.Nusic.service;
 
+import com.example.Nusic.DAO.AlbumDAO;
 import com.example.Nusic.DAO.SongDAO;
 import com.example.Nusic.model.Song;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,9 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Song addSong(Song song) {
-        return null;
+    public Song addSong(Long albumId, Song song) throws Exception {
+
+        return songDAO.addSong(albumId,song);
     }
 
     @Override

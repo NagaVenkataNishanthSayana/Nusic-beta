@@ -33,9 +33,9 @@ public class SongController {
     @GetMapping("/AllSongs")
     public List<Song> getAllSongs(){return songService.getAllSongs();}
 
-    @PostMapping("/")
-    public Song addSong(@RequestBody Song song) {
-        return songService.addSong(song);
+    @PostMapping("/{albumId}")
+    public Song addSong(@PathVariable Long albumId ,@RequestBody Song song) throws Exception {
+        return songService.addSong(albumId,song);
     }
 
     @PutMapping("/{id}")

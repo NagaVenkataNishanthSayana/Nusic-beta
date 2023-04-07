@@ -15,12 +15,14 @@ public class AlbumController {
     private AlbumService albumService;
 
     @GetMapping("/{id}")
-    public Album getAlbumById(@PathVariable Long id) {
-        return albumService.getAlbumById(id);
+    public Album getAlbumById(@PathVariable Long id) throws Exception {
+        Album album= albumService.getAlbumById(id);
+
+        return album;
     }
 
     @PostMapping("/")
-    public Album createAlbum(@RequestBody Album album) {
+    public Album createAlbum(@RequestBody Album album) throws Exception {
         return albumService.createAlbum(album);
     }
 

@@ -10,7 +10,7 @@ public interface SongService {
 
     Song getSongById(Long id);
 
-    Song addSong(Song song);
+    Song addSong(Long albumId, Song song) throws Exception;
 
     Song updateSong(Long id, Song song);
 

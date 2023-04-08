@@ -1,5 +1,6 @@
 package com.example.Nusic.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -23,6 +24,7 @@ public class Album {
     private String leadArtist;
 
     //mappings one-many
+
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Song> songs;
 
@@ -34,6 +36,7 @@ public class Album {
         this.id = id;
     }
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public Set<Song> getSongs() {
         return songs;
     }
@@ -41,6 +44,7 @@ public class Album {
     public void setSongs(Set<Song> songs) {
         this.songs = songs;
     }
+
 
     public String getAlbumName() {
         return albumName;

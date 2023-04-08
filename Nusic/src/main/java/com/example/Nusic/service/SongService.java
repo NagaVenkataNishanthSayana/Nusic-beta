@@ -1,6 +1,7 @@
 package com.example.Nusic.service;
 
 
+import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Song;
 
 import java.util.List;
@@ -8,9 +9,9 @@ import java.util.List;
 public interface SongService {
 
 
-    Song getSongById(Long id);
+    Song getSongById(Long id) throws SongException;
 
-    Song addSong(Long albumId, Song song) throws Exception;
+    Song addSong(Long albumId, Song song) throws Exception, SongException;
 
     Song updateSong(Long id, Song song);
 
@@ -18,7 +19,7 @@ public interface SongService {
 
     List<Song> getSongByPlayListId(Long id);
 
-    List<Song> getAllSongs();
+    List<Song> getAllSongs() throws SongException;
 
     List<Song> getSongByAlbumId(Long id);
 }

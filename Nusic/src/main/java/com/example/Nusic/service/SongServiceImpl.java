@@ -2,6 +2,7 @@ package com.example.Nusic.service;
 
 import com.example.Nusic.DAO.AlbumDAO;
 import com.example.Nusic.DAO.SongDAO;
+import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Song;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,12 @@ public class SongServiceImpl implements SongService {
     SongDAO songDAO;
 
     @Override
-    public Song getSongById(Long id) {
-        return null;
+    public Song getSongById(Long id) throws SongException {
+        return songDAO.getSongById(id);
     }
 
     @Override
-    public Song addSong(Long albumId, Song song) throws Exception {
+    public Song addSong(Long albumId, Song song) throws SongException {
 
         return songDAO.addSong(albumId,song);
     }
@@ -41,7 +42,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public List<Song> getAllSongs() {
+    public List<Song> getAllSongs() throws SongException {
         return songDAO.getAllSongs();
     }
 

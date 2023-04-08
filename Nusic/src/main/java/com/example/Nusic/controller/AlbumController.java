@@ -1,10 +1,13 @@
 package com.example.Nusic.controller;
 
 
+import com.example.Nusic.exception.AlbumException;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.service.AlbumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -19,6 +22,13 @@ public class AlbumController {
         Album album= albumService.getAlbumById(id);
 
         return album;
+    }
+
+    @GetMapping("/")
+    public List<Album> getAllAlbums() throws AlbumException {
+        List<Album> albums= albumService.getAllAlbums();
+
+        return albums;
     }
 
     @PostMapping("/")

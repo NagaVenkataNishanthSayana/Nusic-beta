@@ -1,5 +1,7 @@
 package com.example.Nusic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -8,6 +10,9 @@ import java.util.List;
 @Table(name = "songs",uniqueConstraints={@UniqueConstraint(columnNames = {"song_path","song_name","album_id"})})
 public class Song {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(name = "song_path",nullable = false,unique = true,length = 50)
     private String songPath;
@@ -18,9 +23,12 @@ public class Song {
     @Column(nullable = false)
     private String artists;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "songs",fetch = FetchType.LAZY)
     private List<PlayList> playlists;
 
+
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "album_id",nullable = false)
     private Album album;
@@ -48,11 +56,6 @@ public class Song {
     public void setAlbum(Album album) {
         this.album = album;
     }
-
-    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
 
     public String getSongPath() {
         return songPath;

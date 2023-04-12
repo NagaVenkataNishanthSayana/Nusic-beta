@@ -21,26 +21,11 @@ public class SongController {
         return songService.getSongById(id);
     }
 
-    //Playlist
-    @GetMapping("/playlists/{playList_id}")
-    public List<Song> getSongByPlayListId(@PathVariable Long id) {
-        return songService.getSongByPlayListId(id);
-    }
-
-    //Album
-    @GetMapping("/albums/{album_id}")
-    public List<Song> getSongByAlbumId(@PathVariable Long id) {
-        return songService.getSongByAlbumId(id);
-    }
-
     @GetMapping("/")
     public List<Song> getAllSongs() throws SongException {return songService.getAllSongs();}
 
     //Album
-    @PostMapping("/albums/{albumId}")
-    public Song addSong(@PathVariable Long albumId ,@RequestBody Song song) throws Exception {
-        return songService.addSong(albumId,song);
-    }
+
 
     @PutMapping("/{id}")
     public Song updateSong(@PathVariable Long id, @RequestBody Song song) {

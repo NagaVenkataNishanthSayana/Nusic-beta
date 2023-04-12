@@ -3,7 +3,9 @@ package com.example.Nusic.controller;
 
 import com.example.Nusic.exception.AlbumException;
 import com.example.Nusic.model.Album;
+import com.example.Nusic.model.Song;
 import com.example.Nusic.service.AlbumService;
+import com.example.Nusic.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,9 @@ public class AlbumController {
 
     @Autowired
     private AlbumService albumService;
+
+    @Autowired
+    private SongService songService;
 
     @GetMapping("/{id}")
     public Album getAlbumById(@PathVariable Long id) throws Exception {
@@ -34,6 +39,11 @@ public class AlbumController {
     @PostMapping("/")
     public Album createAlbum(@RequestBody Album album) throws Exception {
         return albumService.createAlbum(album);
+    }
+
+    @PostMapping("/{albumId}/songs")
+    public Song addSong(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
+        return songService.addSong(albumId,song);
     }
 
     @PutMapping("/{id}")

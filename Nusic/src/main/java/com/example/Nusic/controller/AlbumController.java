@@ -36,6 +36,14 @@ public class AlbumController {
         return albums;
     }
 
+    @GetMapping("/{albumName}")
+    public Album getAlbumByName(@PathVariable String albumName){
+
+        return albumService.getAlbumByName(albumName);
+
+    }
+
+
     @PostMapping("/")
     public Album createAlbum(@RequestBody Album album) throws Exception {
         return albumService.createAlbum(album);
@@ -43,12 +51,17 @@ public class AlbumController {
 
     @PostMapping("/{albumId}/songs")
     public Song addSongToAlbum(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
-        return songService.addSong(albumId,song);
+        return songService.addSongToAlbum(albumId,song);
     }
 
     @PutMapping("/{id}")
     public Album updateAlbum(@PathVariable Long id, @RequestBody Album album) {
         return albumService.updateAlbum(id, album);
+    }
+
+    @PostMapping("/{albumId}/songs")
+    public Song deleteSongFromAlbum(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
+        return songService.deleteSongFromAlbum(albumId,song);
     }
 
     @DeleteMapping("/{id}")

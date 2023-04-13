@@ -45,4 +45,7 @@ public class UserDAO extends DAO{
             throw new UserException("Exception while deleting user: " + e.getMessage());
         }
     }
+
+    public void updateUserDetails(Long id) {
+    }
 }

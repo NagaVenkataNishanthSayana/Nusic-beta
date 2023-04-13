@@ -1,6 +1,5 @@
 package com.example.Nusic.service;
 
-import com.example.Nusic.DAO.AlbumDAO;
 import com.example.Nusic.DAO.SongDAO;
 import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Song;
@@ -21,7 +20,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Song addSong(Long albumId, Song song) throws SongException {
+    public Song addSongToAlbum(Long albumId, Song song) throws SongException {
 
         return songDAO.addSong(albumId,song);
     }
@@ -32,8 +31,9 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public void deleteSong(Long id) {
+    public Song deleteSongFromAlbum(Long id, Song song) {
 
+        return songDAO.deleteSongFromAlbum(id,song);
     }
 
     @Override
@@ -49,5 +49,10 @@ public class SongServiceImpl implements SongService {
     @Override
     public List<Song> getSongByAlbumId(Long id) {
         return null;
+    }
+
+    @Override
+    public Song getSongByName(String songName) {
+        return songDAO.getSongByName(songName);
     }
 }

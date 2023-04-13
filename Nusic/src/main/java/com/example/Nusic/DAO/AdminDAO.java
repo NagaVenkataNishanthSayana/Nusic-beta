@@ -29,4 +29,7 @@ public class AdminDAO extends DAO{
             throw new AdminException("",e);
         }
     }
+
+    public void updateAdminDetails(Long id) {
+    }
 }

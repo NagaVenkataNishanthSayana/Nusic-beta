@@ -72,12 +72,12 @@ public class PlayListDAO extends DAO{
 
     }
 
-    public PlayList addSongToPlayList(Long songId, Long playListId) throws PlayListException {
+    public PlayList addSongToPlayList(Song song, Long playListId) throws PlayListException {
         try{
             begin();
             Session session=getSession();
             PlayList playList=session.get(PlayList.class,playListId);
-            Song newSong=session.get(Song.class,songId);
+            Song newSong=session.get(Song.class,song.getId());
             Set<Song> songsSet=playList.getSongs();
             songsSet.add(newSong);
             playList.setSongs(songsSet);
@@ -89,5 +89,9 @@ public class PlayListDAO extends DAO{
         }catch (HibernateException e){
             throw new PlayListException("Error while adding song to Playlist:"+e.getMessage());
         }
+    }
+
+    public PlayList getPlayListByName(String playlistName) {
+        return null;
     }
 }

@@ -71,4 +71,13 @@ public class SongDAO extends DAO{
 
         }
     }
+
+    public Song deleteSongFromAlbum(Long id, Song song) {
+
+        return null;
+    }
+
+    public Song getSongByName(String songName) {
+        return null;
+    }
 }

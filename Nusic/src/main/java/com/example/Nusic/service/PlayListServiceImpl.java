@@ -3,6 +3,7 @@ package com.example.Nusic.service;
 import com.example.Nusic.DAO.PlayListDAO;
 import com.example.Nusic.exception.PlayListException;
 import com.example.Nusic.model.PlayList;
+import com.example.Nusic.model.Song;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +41,12 @@ public class PlayListServiceImpl implements PlayListService {
     }
 
     @Override
-    public PlayList addSongToPlayList(Long songId, Long PlayListId) throws PlayListException {
-        return playListDAO.addSongToPlayList(songId,PlayListId);
+    public PlayList addSongToPlayList(Song song, Long PlayListId) throws PlayListException {
+        return playListDAO.addSongToPlayList(song,PlayListId);
+    }
+
+    @Override
+    public PlayList getPlayListByName(String playlistName) {
+        return playListDAO.getPlayListByName(playlistName);
     }
 }

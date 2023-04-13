@@ -20,7 +20,7 @@ public class UserController {
     private PlayListService playListService;
 
     @PostMapping("/")
-    public String add(@RequestBody User user) throws UserException {
+    public String createUser(@RequestBody User user) throws UserException {
         userService.saveUser(user);
         return "New User is created";
     }
@@ -30,10 +30,16 @@ public class UserController {
         return playListService.createPlaylist(playlist,id);
     }
 
-    @GetMapping("/{email}")
-    public String getUser(@PathVariable String email) throws UserException {
-        return userService.getUser(email);
+    @PostMapping("/login")
+    public String validateUserByEmail(@RequestBody User user) throws UserException {
+        return userService.getUserByEmail(user);
 
+    }
+
+    @PutMapping("/{id}")
+    public String updateUserDetails(@PathVariable Long id){
+        userService.updateUserDetails(id);
+        return "User Details updated";
     }
 
 

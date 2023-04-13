@@ -1,7 +1,6 @@
 package com.example.Nusic.service;
 
 import com.example.Nusic.exception.AlbumException;
-import com.example.Nusic.exception.UserException;
 import com.example.Nusic.model.Album;
 
 import java.util.List;
@@ -16,4 +15,6 @@ public interface AlbumService {
     void deleteAlbum(Long id);
 
     List<Album> getAllAlbums() throws AlbumException;
+
+    Album getAlbumByName(String albumName);
 }

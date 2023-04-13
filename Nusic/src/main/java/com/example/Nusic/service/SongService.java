@@ -11,15 +11,17 @@ public interface SongService {
 
     Song getSongById(Long id) throws SongException;
 
-    Song addSong(Long albumId, Song song) throws Exception, SongException;
+    Song addSongToAlbum(Long albumId, Song song) throws Exception, SongException;
 
     Song updateSong(Long id, Song song);
 
-    void deleteSong(Long id);
+    Song deleteSongFromAlbum(Long id, Song song);
 
     List<Song> getSongByPlayListId(Long id);
 
     List<Song> getAllSongs() throws SongException;
 
     List<Song> getSongByAlbumId(Long id);
+
+    Song getSongByName(String songName);
 }

@@ -26,11 +26,14 @@ public class PlayListController {
         return playListService.getAllPlaylists();
     }
 
+    @GetMapping("/{playlistName}")
+    public PlayList getPlayListByName(@PathVariable String playlistName){
+        return playListService.getPlayListByName(playlistName);
+    }
 
-
-    @PostMapping("/{id}/songs/{songsId}")
-    public PlayList addSongToPlayList(@PathVariable Long id, @PathVariable Long songsId) throws PlayListException {
-        return playListService.addSongToPlayList(songsId, id);
+    @PostMapping("/{id}/songs")
+    public PlayList addSongToPlayList(@PathVariable Long id, @RequestBody Song song) throws PlayListException {
+        return playListService.addSongToPlayList(song, id);
     }
 
     @PutMapping("/{id}")

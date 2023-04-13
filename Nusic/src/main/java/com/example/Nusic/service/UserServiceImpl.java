@@ -18,7 +18,12 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public String getUser(String email) {
+    public String getUserByEmail(User user) {
         return null;
+    }
+
+    @Override
+    public void updateUserDetails(Long id) {
+        userDAO.updateUserDetails(id);
     }
 }

@@ -13,13 +13,19 @@ public class AdminController {
     AdminService adminService;
 
     @PostMapping("/")
-    public String addAdmin(@RequestBody Admin admin) throws AdminException {
-        adminService.addAdmin(admin);
+    public String createAdmin(@RequestBody Admin admin) throws AdminException {
+        adminService.createAdmin(admin);
         return "Admin Registered";
     }
 
-    @GetMapping("/{email}")
-    public Admin getAdmin(@PathVariable String email) throws AdminException {
-        return adminService.getAdmin(email);
+    @PostMapping("/")
+    public Admin validateAdminByEmail(@RequestBody String email) throws AdminException {
+        return adminService.getAdminByEmail(email);
+    }
+
+    @PutMapping("/{id}")
+    public String updateAdminDetails(@PathVariable Long id){
+        adminService.updateAdminDetails(id);
+        return "Admin Details updated";
     }
 }

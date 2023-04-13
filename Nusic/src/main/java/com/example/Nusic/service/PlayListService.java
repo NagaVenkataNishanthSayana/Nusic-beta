@@ -2,6 +2,7 @@ package com.example.Nusic.service;
 
 import com.example.Nusic.exception.PlayListException;
 import com.example.Nusic.model.PlayList;
+import com.example.Nusic.model.Song;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface PlayListService {
 
     List<PlayList> getAllPlaylists();
 
-    PlayList addSongToPlayList(Long song, Long id) throws PlayListException;
+    PlayList addSongToPlayList(Song song, Long id) throws PlayListException;
+
+    PlayList getPlayListByName(String playlistName);
 }

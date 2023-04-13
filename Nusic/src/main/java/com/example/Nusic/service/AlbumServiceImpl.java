@@ -38,4 +38,9 @@ public class AlbumServiceImpl implements AlbumService {
     public List<Album> getAllAlbums() throws AlbumException {
         return albumDAO.getAllAlbums();
     }
+
+    @Override
+    public Album getAlbumByName(String albumName) {
+        return null;
+    }
 }

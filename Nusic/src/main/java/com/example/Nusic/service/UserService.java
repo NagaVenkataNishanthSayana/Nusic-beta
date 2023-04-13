@@ -9,5 +9,7 @@ public interface UserService {
 
     public User saveUser(User student) throws UserException;
 
-    public String getUser(String email);
+    public String getUserByEmail(User user);
+
+    void updateUserDetails(Long id);
 }

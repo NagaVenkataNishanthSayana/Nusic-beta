@@ -1,5 +1,6 @@
 package com.example.Nusic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Set;
@@ -25,6 +26,7 @@ public class User {
     private String email;
 
     //Mappings one-many
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private Set<PlayList> playlists;
 

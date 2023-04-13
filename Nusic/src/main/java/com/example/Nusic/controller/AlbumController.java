@@ -42,7 +42,7 @@ public class AlbumController {
     }
 
     @PostMapping("/{albumId}/songs")
-    public Song addSong(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
+    public Song addSongToAlbum(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
         return songService.addSong(albumId,song);
     }
 

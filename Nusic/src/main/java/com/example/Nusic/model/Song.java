@@ -24,7 +24,7 @@ public class Song {
     private String artists;
 
     @JsonIgnore
-    @ManyToMany(mappedBy = "songs",fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "songs",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private List<PlayList> playlists;
 
 

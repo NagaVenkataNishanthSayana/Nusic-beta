@@ -17,7 +17,7 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
-    public Admin getAdmin(String email) {
+    public Admin getAdmin(String email) throws AdminException {
         return adminDAO.getAdmin(email);
     }
 }

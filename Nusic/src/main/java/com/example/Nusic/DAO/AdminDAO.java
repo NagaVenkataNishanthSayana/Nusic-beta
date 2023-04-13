@@ -8,10 +8,14 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public class AdminDAO extends DAO{
-    public Admin getAdmin(String email) {
+    public Admin getAdmin(String email) throws AdminException {
         try {
             begin();
-            Query <Admin> admin=getSession().createQuery(" select from admin",Admin.class);
+            Admin admin=getSession().find(Admin.class,email);
+
+            return admin;
+        }catch (HibernateException e){
+            throw new AdminException("",e);
         }
     }
 

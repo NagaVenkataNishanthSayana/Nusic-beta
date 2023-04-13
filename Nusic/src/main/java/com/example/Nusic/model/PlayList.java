@@ -1,11 +1,14 @@
 package com.example.Nusic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "playlists")
+@Table(name = "playlists",uniqueConstraints =@UniqueConstraint(name ="UniqueUserPlayList" ,columnNames = {"playlist_name","user_id"}))
 public class PlayList {
 
 
@@ -13,16 +16,19 @@ public class PlayList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "playlist_name",nullable = false)
+    @Column(name = "playlist_name",nullable = false,length = 25)
     private String playListName;
 
     //Mapping one-many
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
 
     //Mapping one-many
-    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     @JoinTable(name = "playlist_tracks",joinColumns = @JoinColumn(name = "playlist_id",nullable = false),inverseJoinColumns = @JoinColumn(name = "song_id",nullable = false))
     Set<Song> songs;
 

@@ -19,7 +19,7 @@ public class AdminController {
     }
 
     @GetMapping("/{email}")
-    public Admin getAdmin(@PathVariable String email){
+    public Admin getAdmin(@PathVariable String email) throws AdminException {
         return adminService.getAdmin(email);
     }
 }

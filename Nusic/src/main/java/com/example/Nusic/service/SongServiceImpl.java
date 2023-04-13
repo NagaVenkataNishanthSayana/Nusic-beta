@@ -52,7 +52,7 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Song getSongByName(String songName) {
+    public Song getSongByName(String songName) throws SongException {
         return songDAO.getSongByName(songName);
     }
 }

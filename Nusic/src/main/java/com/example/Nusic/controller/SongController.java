@@ -5,6 +5,7 @@ import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Song;
 import com.example.Nusic.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,8 +22,8 @@ public class SongController {
         return songService.getSongById(id);
     }
 
-    @GetMapping("/{songName}")
-    public Song getSongByName(@PathVariable String songName){
+    @GetMapping
+    public Song getSongByName(@RequestParam(value = "songName") String songName) throws SongException {
         return songService.getSongByName(songName);
     }
 

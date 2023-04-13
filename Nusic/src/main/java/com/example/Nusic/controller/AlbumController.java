@@ -59,9 +59,9 @@ public class AlbumController {
         return albumService.updateAlbum(id, album);
     }
 
-    @PostMapping("/{albumId}/songs")
+    @DeleteMapping("/{albumId}/songs")
     public Song deleteSongFromAlbum(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
-        return songService.deleteSongFromAlbum(albumId,song);
+        return null;
     }
 
     @DeleteMapping("/{id}")

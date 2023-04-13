@@ -4,8 +4,13 @@ import com.example.Nusic.exception.AlbumException;
 import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -77,7 +82,23 @@ public class SongDAO extends DAO{
         return null;
     }
 
-    public Song getSongByName(String songName) {
-        return null;
+    public Song getSongByName(String songName) throws SongException {
+        try{
+            begin();
+            String hql="FROM Song as s WHERE s.email= :email";
+            CriteriaBuilder cb = getSession().getCriteriaBuilder();
+            CriteriaQuery<Song> cr = cb.createQuery(Song.class);
+            Root<Song> root = cr.from(Song.class);
+            cr.select(root).where(cb.like(root.get("songName"), "%"+songName+"%"));
+            Query<Song> query = getSession().createQuery(cr);
+            Song song=query.getSingleResult();
+            commit();
+            close();
+
+            return song;
+
+        }catch (HibernateException e){
+            throw new SongException("Error while fetching Song By Name:"+e.getMessage());
+        }
     }
 }

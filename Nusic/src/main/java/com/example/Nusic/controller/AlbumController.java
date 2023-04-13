@@ -36,8 +36,8 @@ public class AlbumController {
         return albums;
     }
 
-    @GetMapping("/{albumName}")
-    public Album getAlbumByName(@PathVariable String albumName){
+    @GetMapping
+    public Album getAlbumByName(@RequestParam(value = "albumName") String albumName) throws AlbumException {
 
         return albumService.getAlbumByName(albumName);
 
@@ -57,6 +57,11 @@ public class AlbumController {
     @PutMapping("/{id}")
     public Album updateAlbum(@PathVariable Long id, @RequestBody Album album) {
         return albumService.updateAlbum(id, album);
+    }
+
+    @PutMapping("/{id}/songs/{songId}")
+    public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
+        return songService.updateSong(id, song);
     }
 
     @DeleteMapping("/{albumId}/songs")

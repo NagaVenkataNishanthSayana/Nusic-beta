@@ -40,7 +40,7 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public Album getAlbumByName(String albumName) {
-        return null;
+    public Album getAlbumByName(String albumName) throws AlbumException {
+        return albumDAO.getAlbumByName(albumName);
     }
 }

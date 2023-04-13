@@ -16,5 +16,5 @@ public interface AlbumService {
 
     List<Album> getAllAlbums() throws AlbumException;
 
-    Album getAlbumByName(String albumName);
+    Album getAlbumByName(String albumName) throws AlbumException;
 }

@@ -1,15 +1,12 @@
 package com.example.Nusic.DAO;
 
 import com.example.Nusic.exception.AlbumException;
-import com.example.Nusic.exception.UserException;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -27,9 +24,7 @@ public class AlbumDAO extends DAO{
         } catch (HibernateException e) {
             rollback();
             throw new AlbumException("Exception while creating album: " + e.getMessage());
-
         }
-
     }
 
     public Album getByAlbumId(Long id) throws AlbumException {
@@ -37,7 +32,6 @@ public class AlbumDAO extends DAO{
         try{
             begin();
             Session session=getSession();
-
             Album album= session.get(Album.class,String.valueOf(id));
             Set<Song> songsList = album.getSongs();
             songsList.size();
@@ -48,7 +42,6 @@ public class AlbumDAO extends DAO{
         }catch (HibernateException e) {
             rollback();
             throw new AlbumException("Exception while retrieving album: " + e.getMessage());
-
         }
     }
 
@@ -59,7 +52,7 @@ public class AlbumDAO extends DAO{
             begin();
             List<Album> albums=getSession().createNativeQuery(
                             "select * from albums ",Album.class
-                    )
+                    ).setMaxResults(2)
                     .getResultList();
             for(Album album:albums){
                 album.setSongs(null);
@@ -68,10 +61,25 @@ public class AlbumDAO extends DAO{
             close();
 
             return albums;
-        }catch (HibernateException e) {
+        } catch (HibernateException e) {
             rollback();
             throw new AlbumException("Exception while retrieving all albums: " + e.getMessage());
+        }
+    }
 
+    public Album getAlbumByName(String albumName) throws AlbumException {
+        try{
+            begin();
+            String hql="FROM Album where albumName=:albumName";
+            Query query=getSession().createQuery(hql,Album.class);
+            query.setParameter("albumName",albumName);
+            Album album= (Album) query.getSingleResult();
+            Set<Song> songs=album.getSongs();
+            songs.size();
+            return album;
+        }catch (HibernateException e){
+            rollback();
+            throw new AlbumException("Exception while retrieving Album by name:"+e.getMessage());
         }
     }
 }

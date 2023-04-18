@@ -22,7 +22,7 @@ public class SongServiceImpl implements SongService {
     @Override
     public Song addSongToAlbum(Long albumId, Song song) throws SongException {
 
-        return songDAO.addSong(albumId,song);
+        return songDAO.addSongToAlbum(albumId,song);
     }
 
     @Override
@@ -30,11 +30,6 @@ public class SongServiceImpl implements SongService {
         return null;
     }
 
-    @Override
-    public Song deleteSongFromAlbum(Long id, Song song) {
-
-        return songDAO.deleteSongFromAlbum(id,song);
-    }
 
     @Override
     public List<Song> getSongByPlayListId(Long id) {

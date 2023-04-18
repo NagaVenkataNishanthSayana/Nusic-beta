@@ -6,7 +6,10 @@ import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
 import com.example.Nusic.service.AlbumService;
 import com.example.Nusic.service.SongService;
+import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,8 +58,15 @@ public class AlbumController {
     }
 
     @PutMapping("/{id}")
-    public Album updateAlbum(@PathVariable Long id, @RequestBody Album album) {
-        return albumService.updateAlbum(id, album);
+    public ResponseEntity<Album> updateAlbum(@PathVariable Long id, @RequestBody Album album) {
+        Album newAlbum=null;
+        try{
+            newAlbum=albumService.updateAlbum(id, album);
+            return new ResponseEntity(newAlbum, HttpStatus.OK);
+        } catch (AlbumException e) {
+            e.printStackTrace();
+            return new ResponseEntity(newAlbum, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @PutMapping("/{id}/songs/{songId}")
@@ -64,13 +74,26 @@ public class AlbumController {
         return songService.updateSong(id, song);
     }
 
-    @DeleteMapping("/{albumId}/songs")
-    public Song deleteSongFromAlbum(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
-        return null;
+    @DeleteMapping("/{id}/songs/{songId}")
+    public ResponseEntity deleteSongFromAlbum(@PathVariable Long albumId , @PathVariable Long songId) {
+        try {
+            albumService.deleteSongFromAlbum(albumId,songId);
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch (AlbumException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+
     }
 
     @DeleteMapping("/{id}")
-    public void deleteAlbum(@PathVariable Long id) {
-        albumService.deleteAlbum(id);
+    public ResponseEntity<?> deleteAlbum(@PathVariable Long id){
+        try {
+            albumService.deleteAlbum(id);
+            return ResponseEntity.status(HttpStatus.GONE).build();
+        } catch (AlbumException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

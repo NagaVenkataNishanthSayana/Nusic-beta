@@ -10,11 +10,13 @@ public interface AlbumService {
 
     Album createAlbum(Album album) throws Exception;
 
-    Album updateAlbum(Long id, Album album);
+    Album updateAlbum(Long id, Album album) throws AlbumException;
 
-    void deleteAlbum(Long id);
+    void deleteAlbum(Long id) throws AlbumException;
 
     List<Album> getAllAlbums() throws AlbumException;
 
     Album getAlbumByName(String albumName) throws AlbumException;
+
+    void deleteSongFromAlbum(Long albumId, Long songId) throws AlbumException;
 }

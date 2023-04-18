@@ -15,8 +15,6 @@ public interface SongService {
 
     Song updateSong(Long id, Song song);
 
-    Song deleteSongFromAlbum(Long id, Song song);
-
     List<Song> getSongByPlayListId(Long id);
 
     List<Song> getAllSongs() throws SongException;

@@ -1,17 +1,15 @@
 package com.example.Nusic.DAO;
 
-import com.example.Nusic.exception.AlbumException;
 import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.CriteriaUpdate;
+import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -45,13 +43,12 @@ public class SongDAO extends DAO{
 
     }
 
-    public Song addSong(Long albumId, Song song) throws SongException {
+    public Song addSongToAlbum(Long albumId, Song song) throws SongException {
 
         try{
             begin();
             Session session=getSession();
-            song.setAlbum( session.get(Album.class,String.valueOf(albumId)));
-
+            song.setAlbum( session.get(Album.class,albumId));
             session.persist(song);
             commit();
             close();
@@ -89,7 +86,12 @@ public class SongDAO extends DAO{
             CriteriaBuilder cb = getSession().getCriteriaBuilder();
             CriteriaQuery<Song> cr = cb.createQuery(Song.class);
             Root<Song> root = cr.from(Song.class);
-            cr.select(root).where(cb.like(root.get("songName"), "%"+songName+"%"));
+            //Criterion restriction can be implemented as well
+            //Criterion restriction = Restrictions.eq("fieldName", value);
+            //Criterion restriction = Restrictions.eq("fieldName", value);
+            //select single column data using restrictions
+            //criteriaQuery.select(projection).where(restriction);
+            cr.select(root).where(cb.like(root.get("songName"), songName));
             Query<Song> query = getSession().createQuery(cr);
             Song song=query.getSingleResult();
             commit();

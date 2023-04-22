@@ -56,11 +56,12 @@ public class AlbumDAO extends DAO{
                             "select * from albums ",Album.class
                     ).setMaxResults(10)
                     .getResultList();
+
+            commit();
+            close();
             for(Album album:albums){
                 album.setSongs(null);
             }
-            commit();
-            close();
 
             return albums;
         } catch (HibernateException e) {
@@ -78,6 +79,8 @@ public class AlbumDAO extends DAO{
             Album album= (Album) query.getSingleResult();
             Set<Song> songs=album.getSongs();
             songs.size();
+            commit();
+            close();
             return album;
         }catch (HibernateException e){
             rollback();

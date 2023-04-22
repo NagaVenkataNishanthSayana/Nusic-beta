@@ -2,6 +2,7 @@ package com.example.Nusic.controller;
 
 
 import com.example.Nusic.exception.AlbumException;
+import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
 import com.example.Nusic.service.AlbumService;
@@ -26,35 +27,62 @@ public class AlbumController {
     private SongService songService;
 
     @GetMapping("/{id}")
-    public Album getAlbumById(@PathVariable Long id) throws Exception {
-        Album album= albumService.getAlbumById(id);
-
-        return album;
+    public ResponseEntity<Album> getAlbumById(@PathVariable Long id)  {
+        Album album= null;
+        try {
+            album = albumService.getAlbumById(id);
+            return ResponseEntity.ok(album);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @GetMapping("/")
-    public List<Album> getAllAlbums() throws AlbumException {
-        List<Album> albums= albumService.getAllAlbums();
+    public ResponseEntity<List<Album>> getAllAlbums() {
+        List<Album> albums= null;
+        try {
+            albums = albumService.getAllAlbums();
+            return ResponseEntity.ok(albums);
+        } catch (AlbumException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 
-        return albums;
     }
 
     @GetMapping
-    public Album getAlbumByName(@RequestParam(value = "albumName") String albumName) throws AlbumException {
+    public ResponseEntity<Album> getAlbumByName(@RequestParam(value = "albumName") String albumName) {
+        Album currAlbum=null;
+        try {
+            currAlbum= albumService.getAlbumByName(albumName);
 
-        return albumService.getAlbumByName(albumName);
+            return ResponseEntity.ok(currAlbum);
+        } catch (AlbumException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
 
     }
 
 
     @PostMapping("/")
-    public Album createAlbum(@RequestBody Album album) throws Exception {
-        return albumService.createAlbum(album);
+    public ResponseEntity<Album> createAlbum(@RequestBody Album album)  {
+        Album currAlbum=null;
+        try {
+            currAlbum=albumService.createAlbum(album);
+            return ResponseEntity.ok(currAlbum);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PostMapping("/{albumId}/songs")
-    public Song addSongToAlbum(@PathVariable Long albumId , @RequestBody Song song) throws Exception {
-        return songService.addSongToAlbum(albumId,song);
+    public ResponseEntity<Song> addSongToAlbum(@PathVariable Long albumId , @RequestBody Song song) {
+        Song currSong=null;
+        try {
+            currSong= songService.addSongToAlbum(albumId,song);
+            return new ResponseEntity(currSong, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
     @PutMapping("/{id}")
@@ -70,8 +98,15 @@ public class AlbumController {
     }
 
     @PutMapping("/{id}/songs/{songId}")
-    public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
-        return songService.updateSong(id, song);
+    public ResponseEntity<Song> updateSong(@PathVariable Long id, @RequestBody Song song) {
+        Song currSong=null;
+
+        try {
+            currSong=songService.updateSong(id, song);
+            return new ResponseEntity<>(currSong,HttpStatus.OK);
+        } catch (SongException e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @DeleteMapping("/{id}/songs/{songId}")
@@ -87,10 +122,10 @@ public class AlbumController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAlbum(@PathVariable Long id){
+    public ResponseEntity deleteAlbum(@PathVariable Long id){
         try {
             albumService.deleteAlbum(id);
-            return ResponseEntity.status(HttpStatus.GONE).build();
+            return ResponseEntity.status(HttpStatus.OK).build();
         } catch (AlbumException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -24,7 +24,6 @@ public class Album {
     private String leadArtist;
 
     //mappings one-many
-
     @OneToMany(mappedBy = "album",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Song> songs;
 

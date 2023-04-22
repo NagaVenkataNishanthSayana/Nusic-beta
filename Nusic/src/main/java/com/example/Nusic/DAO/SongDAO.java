@@ -10,6 +10,7 @@ import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,6 +22,8 @@ public class SongDAO extends DAO{
     public SongDAO() {
     }
 
+    @Autowired
+    AlbumDAO albumDAO;
 
     public List<Song> getAllSongs() throws SongException {
         try{
@@ -74,10 +77,6 @@ public class SongDAO extends DAO{
         }
     }
 
-    public Song deleteSongFromAlbum(Long id, Song song) {
-
-        return null;
-    }
 
     public Song getSongByName(String songName) throws SongException {
         try{
@@ -87,7 +86,6 @@ public class SongDAO extends DAO{
             CriteriaQuery<Song> cr = cb.createQuery(Song.class);
             Root<Song> root = cr.from(Song.class);
             //Criterion restriction can be implemented as well
-            //Criterion restriction = Restrictions.eq("fieldName", value);
             //Criterion restriction = Restrictions.eq("fieldName", value);
             //select single column data using restrictions
             //criteriaQuery.select(projection).where(restriction);
@@ -102,5 +100,25 @@ public class SongDAO extends DAO{
         }catch (HibernateException e){
             throw new SongException("Error while fetching Song By Name:"+e.getMessage());
         }
+    }
+
+    public Song updateSong(Long id, Song song) throws SongException {
+        try{
+            begin();
+            Song currSong=getSession().get(Song.class,id);
+            if(song!=null){
+                if (song.getSongName()!=null) currSong.setSongName(song.getSongName());
+                if(song.getSongPath()!=null) currSong.setSongPath(song.getSongPath());
+            }
+            currSong.setSongName(song.getSongName());
+            currSong.setSongPath(song.getSongPath());
+            commit();
+            close();
+            return currSong;
+        }catch (HibernateException e){
+            rollback();
+            throw new SongException("Exception while updating Song:"+e.getMessage());
+        }
+
     }
 }

@@ -13,7 +13,7 @@ public interface SongService {
 
     Song addSongToAlbum(Long albumId, Song song) throws Exception, SongException;
 
-    Song updateSong(Long id, Song song);
+    Song updateSong(Long id, Song song) throws SongException;
 
     List<Song> getSongByPlayListId(Long id);
 

@@ -26,8 +26,8 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Song updateSong(Long id, Song song) {
-        return null;
+    public Song updateSong(Long id, Song song) throws SongException {
+        return songDAO.updateSong(id,song);
     }
 
 

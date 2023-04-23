@@ -1,9 +1,6 @@
 package com.example.Nusic.controller.advice;
 
-import com.example.Nusic.exception.DatabaseConnectionException;
-import com.example.Nusic.exception.DuplicateEntryException;
-import com.example.Nusic.exception.ForeignKeyConstraintException;
-import com.example.Nusic.exception.UnknownSqlException;
+import com.example.Nusic.exception.*;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import org.springframework.http.HttpStatus;
@@ -41,6 +38,16 @@ public class ExceptionHandlerControllerAdvice {
 
     @ExceptionHandler(UnknownSqlException.class)
     public ResponseEntity<String> handleUnknownSqlException(UnknownSqlException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<String> handlePasswordMismatchException(PasswordMismatchException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(DatabaseException.class)
+    public ResponseEntity<String> handlePasswordMismatchException(DatabaseException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 

@@ -1,12 +1,14 @@
 package com.example.Nusic.controller;
 
-import com.example.Nusic.exception.PlayListException;
-import com.example.Nusic.exception.UserException;
+import com.example.Nusic.exception.*;
 import com.example.Nusic.model.PlayList;
 import com.example.Nusic.model.User;
 import com.example.Nusic.service.PlayListService;
 import com.example.Nusic.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,9 +22,18 @@ public class UserController {
     private PlayListService playListService;
 
     @PostMapping("/")
-    public String createUser(@RequestBody User user) throws UserException {
-        userService.saveUser(user);
-        return "New User is created";
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User currUser=null;
+        try {
+            currUser=userService.saveUser(user);
+            return ResponseEntity.ok(currUser);
+        } catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                 EntityNotFoundException | UnknownSqlException |DatabaseException | PasswordMismatchException e) {
+            throw e;
+        }catch (UserException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Server Error",e);
+        }
     }
 
     @PostMapping("/{id}/playlists")
@@ -31,16 +42,36 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public String validateUserByEmail(@RequestBody User user) throws UserException {
-        return userService.getUserByEmail(user);
+    public ResponseEntity<User> validateUserByEmail(@RequestBody User user) {
+        User currUser = null;
+        try {
+            currUser = userService.validateUser(user);
+            return ResponseEntity.ok(currUser);
+        } catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                 EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
 
+        } catch (UserException e) {
+            throw new RuntimeException("Internal Server Error", e);
+        }
     }
 
-    @PutMapping("/{id}")
-    public String updateUserDetails(@PathVariable Long id){
-        userService.updateUserDetails(id);
-        return "User Details updated";
-    }
+        @PutMapping("/{id}")
+    public ResponseEntity<User> updateUserDetails(@PathVariable Long id,@RequestBody User user){
+        User currUser=null;
+
+            try {
+                currUser=userService.updateUserDetails(id,user);
+                return ResponseEntity.ok(currUser);
+            }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                    EntityNotFoundException | UnknownSqlException e) {
+                throw e;
+
+            } catch (UserException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
 
 
 }

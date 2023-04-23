@@ -1,5 +1,7 @@
 package com.example.Nusic.service;
 
+import com.example.Nusic.exception.DatabaseConnectionException;
+import com.example.Nusic.exception.PasswordMismatchException;
 import com.example.Nusic.exception.UserException;
 import com.example.Nusic.model.User;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,7 @@ public interface UserService {
 
     public User saveUser(User student) throws UserException;
 
-    public String getUserByEmail(User user);
+    public User validateUser(User user) throws UserException, PasswordMismatchException, DatabaseConnectionException;
 
-    void updateUserDetails(Long id);
+    User updateUserDetails(Long id, User user) throws UserException;
 }

@@ -24,7 +24,7 @@ public class PlayListController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<PlayList>> getAllPlaylist(@PathVariable Long id) {
+    public ResponseEntity<List<PlayList>> getAllPlaylist() {
         List<PlayList> playLists=null;
         try {
             playLists= playListService.getAllPlaylists();
@@ -35,8 +35,8 @@ public class PlayListController {
         }
     }
 
-    @GetMapping("/")
-    public PlayList getPlayListByName(@RequestParam String playlistName){
+    @GetMapping
+    public PlayList getPlayListByName(@RequestParam String playlistName) throws PlayListException {
         return playListService.getPlayListByName(playlistName);
     }
 

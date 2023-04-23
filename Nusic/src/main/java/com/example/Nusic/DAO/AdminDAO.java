@@ -2,7 +2,6 @@ package com.example.Nusic.DAO;
 
 import com.example.Nusic.exception.*;
 import com.example.Nusic.model.Admin;
-import com.example.Nusic.model.Album;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import org.hibernate.HibernateException;
@@ -11,18 +10,15 @@ import org.hibernate.Session;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.JDBCConnectionException;
-import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 
-import java.sql.BatchUpdateException;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLTransientConnectionException;
 
 @Repository
 public class AdminDAO extends DAO{
-    public Admin getAdmin(String email) throws AdminException {
+    public Admin getAdminByEmail(String email) throws AdminException, DatabaseConnectionException {
         try {
             begin();
             Admin admin=getSession().find(Admin.class,email);
@@ -42,7 +38,7 @@ public class AdminDAO extends DAO{
             throw new OptimisticLockException("Optimistic lock exception", e);
         } catch (ObjectNotFoundException e) {
             rollback();
-            throw new EntityNotFoundException("Entity not found", e);
+            throw new EntityNotFoundException("Admin Details not found", e);
         } catch (HibernateException e) {
             rollback();
             if (e.getCause() instanceof SQLException) {
@@ -54,7 +50,7 @@ public class AdminDAO extends DAO{
         return null;
     }
 
-    public Admin addAdmin(Admin admin) throws AdminException {
+    public Admin addAdmin(Admin admin) throws AdminException, DatabaseConnectionException {
         try {
             begin();
             getSession().persist(admin);
@@ -88,7 +84,7 @@ public class AdminDAO extends DAO{
         }
     }
 
-    public Admin updateAdminDetails(Long id,Admin admin) throws AdminException {
+    public Admin updateAdminDetails(Long id,Admin admin) throws AdminException, DatabaseConnectionException {
         try{
 
             begin();

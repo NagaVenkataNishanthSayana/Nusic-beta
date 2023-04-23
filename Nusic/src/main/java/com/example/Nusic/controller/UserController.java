@@ -47,10 +47,9 @@ public class UserController {
         try {
             currUser = userService.validateUser(user);
             return ResponseEntity.ok(currUser);
-        } catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
                  EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
             throw e;
-
         } catch (UserException e) {
             throw new RuntimeException("Internal Server Error", e);
         }

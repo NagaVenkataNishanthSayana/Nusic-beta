@@ -1,11 +1,12 @@
 package com.example.Nusic.controller;
 
-import com.example.Nusic.exception.PlayListException;
+import com.example.Nusic.exception.*;
 import com.example.Nusic.model.PlayList;
 import com.example.Nusic.model.Song;
 import com.example.Nusic.service.PlayListService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,30 +20,61 @@ public class PlayListController {
     private PlayListService playListService;
 
     @GetMapping("/{id}")
-    public PlayList getPlaylistById(@PathVariable Long id) throws PlayListException {
-        return playListService.getPlaylistById(id);
+    public ResponseEntity<PlayList> getPlaylistById(@PathVariable Long id) {
+        PlayList playList=null;
+        try {
+            playList=playListService.getPlaylistById(id);
+            return ResponseEntity.ok(playList);
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException |
+                OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch (PlayListException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<PlayList>> getAllPlaylist() {
+    public ResponseEntity<List<PlayList>> getAllPlaylists() {
         List<PlayList> playLists=null;
         try {
             playLists= playListService.getAllPlaylists();
             return ResponseEntity.ok(playLists);
-        } catch (PlayListException e) {
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch (PlayListException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            throw new RuntimeException(e);
         }
     }
 
     @GetMapping
-    public PlayList getPlayListByName(@RequestParam String playlistName) throws PlayListException {
-        return playListService.getPlayListByName(playlistName);
+    public ResponseEntity<PlayList> getPlayListByName(@RequestParam String playlistName)  {
+        PlayList playList=null;
+        try {
+            playList=playListService.getPlayListByName(playlistName);
+            return ResponseEntity.ok(playList);
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch (PlayListException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/{id}/songs")
-    public PlayList addSongToPlayList(@PathVariable Long id, @RequestBody Song song) throws PlayListException {
-        return playListService.addSongToPlayList(song, id);
+    public ResponseEntity<PlayList> addSongToPlayList(@PathVariable Long id, @RequestBody Song song){
+        PlayList playList=null;
+        try {
+            playList=playListService.addSongToPlayList(song, id);
+            return ResponseEntity.ok(playList);
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch (PlayListException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PutMapping("/{id}/songs/{songsId}")
@@ -51,9 +83,12 @@ public class PlayListController {
             PlayList currPlayList=null;
              currPlayList=playListService.updatePlaylist(id, playlist);
              return ResponseEntity.ok(currPlayList);
-        } catch (PlayListException e) {
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch (PlayListException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new RuntimeException(e);
         }
     }
 
@@ -63,13 +98,23 @@ public class PlayListController {
         try {
             currPlayList=playListService.removeSongFromPlayList(id,songsId);
             return ResponseEntity.ok(currPlayList);
-        } catch (PlayListException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }catch(DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch(PlayListException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @DeleteMapping("/{id}")
-    public void deletePlaylist(@PathVariable Long id) throws PlayListException {
-        playListService.deletePlaylist(id);
+    public void deletePlaylist(@PathVariable Long id){
+        try{
+            playListService.deletePlaylist(id);
+        }catch(DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch(PlayListException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

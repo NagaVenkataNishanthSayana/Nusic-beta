@@ -1,14 +1,24 @@
 package com.example.Nusic.DAO;
 
-import com.example.Nusic.exception.PlayListException;
+import com.example.Nusic.exception.*;
 import com.example.Nusic.model.PlayList;
 import com.example.Nusic.model.Song;
 import com.example.Nusic.model.User;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceException;
 import org.hibernate.HibernateException;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
+import org.hibernate.StaleStateException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,11 +34,34 @@ public class PlayListDAO extends DAO{
             commit();
             close();
             return playList;
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
             rollback();
-            e.printStackTrace();
-            throw new PlayListException("Error while fetching playlist "+e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("User Details not found", e);
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("PlayList or Song Details not found", e);
+        }catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (Exception e){
+            rollback();
+            throw new PlayListException("Error while fetching Playlist by Id"+e.getMessage());
         }
+        return null;
     }
 
 
@@ -42,11 +75,39 @@ public class PlayListDAO extends DAO{
             commit();
             close();
             return playlist;
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
             rollback();
-            e.printStackTrace();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            } else {
+                throw new DuplicateEntryException("Playlist already exists", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("User Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (EntityExistsException e) {
+            rollback();
+            throw new DuplicateEntryException("Playlist already exists", e);
+        } catch (PersistenceException e) {
+            rollback();
+            throw new DatabaseException("Error executing database operation", e);
+        }catch (Exception e){
+            rollback();
             throw new PlayListException("Error while creating a playlist"+e.getMessage());
         }
+        return null;
     }
 
     public PlayList updatePlaylist(Long id, PlayList playList) throws PlayListException {
@@ -61,11 +122,34 @@ public class PlayListDAO extends DAO{
             commit();
             close();
             return currPlayList;
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
             rollback();
-            e.printStackTrace();
-            throw new PlayListException("Error while updating PlayList:"+e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("Duplicate entry")) {
+                throw new DuplicateEntryException("PlayList already exists", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        }catch (Exception e){
+            rollback();
+            throw new PlayListException("Error updating PlayList Details", e);
         }
+        return null;
     }
 
     public void deletePlaylist(Long id) throws PlayListException {
@@ -78,7 +162,30 @@ public class PlayListDAO extends DAO{
             }
             commit();
             close();
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
+            rollback();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("Duplicate entry")) {
+                throw new DuplicateEntryException("PlayList already exists", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        }catch (Exception e){
             rollback();
             throw new PlayListException("Error while deleting the playlist "+e.getMessage());
         }
@@ -97,11 +204,34 @@ public class PlayListDAO extends DAO{
                 playList.setSongs(null);
             }
             return playLists;
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
+            rollback();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("PlayList or Song Details not found", e);
+        }catch (Exception e){
             rollback();
             throw new PlayListException("Error while getting all playlists:"+e.getMessage());
         }
-
+        return null;
     }
 
     public PlayList addSongToPlayList(Song song, Long playListId) throws PlayListException {
@@ -118,10 +248,34 @@ public class PlayListDAO extends DAO{
             close();
 
             return playList;
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
+            rollback();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("PlayList or Song Details not found", e);
+        }catch (Exception e){
             rollback();
             throw new PlayListException("Error while adding song to Playlist:"+e.getMessage());
         }
+        return null;
     }
 
     public PlayList getPlayListByName(String playlistName) throws PlayListException {
@@ -137,11 +291,34 @@ public class PlayListDAO extends DAO{
             close();
             return currPlayList;
 
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
             rollback();
-            e.printStackTrace();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("PlayList or Song Details not found", e);
+        }catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (Exception e){
+            rollback();
             throw new PlayListException("Error while getting playList by name:"+playlistName);
         }
+        return null;
     }
 
     public PlayList removeSongPlayList(Long id, Long songsId) throws PlayListException {
@@ -157,10 +334,33 @@ public class PlayListDAO extends DAO{
             commit();
             close();
             return playList;
-        }catch (HibernateException e){
-            e.printStackTrace();
+        }catch (ConstraintViolationException e) {
+            rollback();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("Duplicate entry")) {
+                throw new DuplicateEntryException("PlayList already exists", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("PlayList Details not found", e);
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("PlayList or Song Details not found", e);
+        }catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (Exception e){
             rollback();
             throw new PlayListException("Error while removing song from PlayList:"+e.getMessage());
         }
+        return null;
     }
 }

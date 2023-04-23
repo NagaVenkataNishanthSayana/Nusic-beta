@@ -108,7 +108,7 @@ public class UserDAO extends DAO{
             throw new EntityNotFoundException("User Details not found", e);
         }catch (Exception e){
             rollback();
-            throw new UserException("Error retrieving User Details by email", e);
+            throw new UserException("Error retrieving updating User Details", e);
         }
         return null;
     }

@@ -28,13 +28,12 @@ public class UserDAO extends DAO{
         try {
             //save user object in the database
             begin();
-            getSession().save(user);
+            User currUser= (User) getSession().save(user);
             commit();
             close();
 
-            return user;
-        }
-        catch (ConstraintViolationException e) {
+            return currUser;
+        }catch (ConstraintViolationException e) {
             rollback();
             Throwable cause = e.getCause();
             if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
@@ -56,14 +55,14 @@ public class UserDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
-            else if (e.getCause() instanceof ConstraintViolationException) {
-                throw new DuplicateEntryException("User already exists", e);
-            }
         }catch (EntityExistsException e) {
+            rollback();
             throw new DuplicateEntryException("User already exists", e);
         } catch (PersistenceException e) {
+            rollback();
             throw new DatabaseException("Error executing database operation", e);
         }catch (Exception e){
+            rollback();
             throw new UserException("Error creating user", e);
         }
         return null;
@@ -107,9 +106,11 @@ public class UserDAO extends DAO{
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
         }catch (NullPointerException e){
+            rollback();
             throw new EntityNotFoundException("User Details not found", e);
         }
         catch (Exception e){
+            rollback();
             throw new UserException("Error retrieving User Details by email", e);
         }
         return null;
@@ -147,6 +148,7 @@ public class UserDAO extends DAO{
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
         }catch (Exception e){
+            rollback();
             throw new UserException("Error retrieving User Details by email", e);
         }
         return null;

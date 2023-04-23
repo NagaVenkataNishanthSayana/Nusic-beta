@@ -11,7 +11,7 @@ public interface SongService {
 
     Song getSongById(Long id) throws SongException;
 
-    Song addSongToAlbum(Long albumId, Song song) throws Exception, SongException;
+    Song addSongToAlbum(Long albumId, Song song) throws SongException;
 
     Song updateSong(Long id, Song song) throws SongException;
 

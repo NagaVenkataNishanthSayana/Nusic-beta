@@ -1,12 +1,13 @@
 package com.example.Nusic.controller;
 
 
-import com.example.Nusic.exception.AlbumException;
-import com.example.Nusic.exception.SongException;
+import com.example.Nusic.exception.*;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
 import com.example.Nusic.service.AlbumService;
 import com.example.Nusic.service.SongService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import org.hibernate.HibernateException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,8 +33,11 @@ public class AlbumController {
         try {
             album = albumService.getAlbumById(id);
             return ResponseEntity.ok(album);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            throw e;
+        }catch (AlbumException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Server Error",e);
         }
     }
 
@@ -43,8 +47,11 @@ public class AlbumController {
         try {
             albums = albumService.getAllAlbums();
             return ResponseEntity.ok(albums);
-        } catch (AlbumException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            throw e;
+        }catch (AlbumException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Server Error",e);
         }
 
     }
@@ -56,8 +63,11 @@ public class AlbumController {
             currAlbum= albumService.getAlbumByName(albumName);
 
             return ResponseEntity.ok(currAlbum);
-        } catch (AlbumException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            throw e;
+        }catch (AlbumException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Server Error",e);
         }
 
     }
@@ -69,8 +79,12 @@ public class AlbumController {
         try {
             currAlbum=albumService.createAlbum(album);
             return ResponseEntity.ok(currAlbum);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException |DatabaseException | PasswordMismatchException e){
+            throw e;
+        }catch (AlbumException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Internal Server Error",e);
         }
     }
 
@@ -80,8 +94,11 @@ public class AlbumController {
         try {
             currSong= songService.addSongToAlbum(albumId,song);
             return new ResponseEntity(currSong, HttpStatus.OK);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException |DatabaseException | PasswordMismatchException e){
+            throw e;
+        } catch (SongException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -91,9 +108,11 @@ public class AlbumController {
         try{
             newAlbum=albumService.updateAlbum(id, album);
             return new ResponseEntity(newAlbum, HttpStatus.OK);
-        } catch (AlbumException e) {
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            throw e;
+        }catch (AlbumException e) {
             e.printStackTrace();
-            return new ResponseEntity(newAlbum, HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new RuntimeException("Internal Server Error",e);
         }
     }
 
@@ -104,8 +123,10 @@ public class AlbumController {
         try {
             currSong=songService.updateSong(id, song);
             return new ResponseEntity<>(currSong,HttpStatus.OK);
-        } catch (SongException e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            throw e;
+        }catch (SongException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -114,9 +135,11 @@ public class AlbumController {
         try {
             albumService.deleteSongFromAlbum(albumId,songId);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (AlbumException e) {
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            throw e;
+        }catch (AlbumException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new RuntimeException("Internal Server Error",e);
         }
 
     }
@@ -126,9 +149,11 @@ public class AlbumController {
         try {
             albumService.deleteAlbum(id);
             return ResponseEntity.status(HttpStatus.OK).build();
-        } catch (AlbumException e) {
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            throw e;
+        }catch (AlbumException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            throw new RuntimeException("Internal Server Error",e);
         }
     }
 }

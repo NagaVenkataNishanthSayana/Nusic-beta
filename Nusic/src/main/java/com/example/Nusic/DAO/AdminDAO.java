@@ -50,6 +50,7 @@ public class AdminDAO extends DAO{
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
         }catch (Exception e){
+            rollback();
             throw new AdminException("Error retrieving User Details by email", e);
         }
         return null;
@@ -85,6 +86,7 @@ public class AdminDAO extends DAO{
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
         }catch (Exception e){
+            rollback();
             throw new AdminException("Error retrieving User Details by email", e);
         }
         return null;
@@ -122,8 +124,10 @@ public class AdminDAO extends DAO{
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
         }catch (NullPointerException e){
+            rollback();
             throw new EntityNotFoundException("User Details not found", e);
         }catch (Exception e){
+            rollback();
             throw new AdminException(e.getMessage(),e);
         }
         return null;

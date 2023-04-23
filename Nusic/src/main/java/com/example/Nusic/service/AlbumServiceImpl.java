@@ -21,7 +21,7 @@ public class AlbumServiceImpl implements AlbumService {
 
     @Override
     public Album createAlbum(Album album) throws AlbumException {
-        return albumDAO.create(album);
+        return albumDAO.createAlbum(album);
     }
 
     @Override

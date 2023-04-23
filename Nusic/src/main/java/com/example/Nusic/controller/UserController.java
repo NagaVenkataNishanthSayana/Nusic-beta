@@ -27,7 +27,7 @@ public class UserController {
         try {
             currUser=userService.saveUser(user);
             return ResponseEntity.ok(currUser);
-        } catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
                  EntityNotFoundException | UnknownSqlException |DatabaseException | PasswordMismatchException e) {
             throw e;
         }catch (UserException e) {

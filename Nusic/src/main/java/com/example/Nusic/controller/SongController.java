@@ -6,6 +6,8 @@ import com.example.Nusic.model.Song;
 import com.example.Nusic.service.SongService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,8 +33,15 @@ public class SongController {
     public List<Song> getAllSongs() throws SongException {return songService.getAllSongs();}
 
     @PutMapping("/{id}")
-    public Song updateSong(@PathVariable Long id, @RequestBody Song song) {
-        return songService.updateSong(id, song);
+    public ResponseEntity<Song> updateSong(@PathVariable Long id, @RequestBody Song song) {
+        Song currSong=null;
+        try {
+            currSong=songService.updateSong(id, song);
+            return ResponseEntity.ok(currSong);
+        } catch (SongException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+        }
     }
 
 

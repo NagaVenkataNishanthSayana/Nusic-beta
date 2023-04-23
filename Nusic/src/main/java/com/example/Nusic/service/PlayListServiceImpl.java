@@ -26,7 +26,7 @@ public class PlayListServiceImpl implements PlayListService {
     }
 
     @Override
-    public PlayList updatePlaylist(Long id, PlayList playlist) {
+    public PlayList updatePlaylist(Long id, PlayList playlist) throws PlayListException {
         return playListDAO.updatePlaylist(id,playlist);
     }
 
@@ -36,7 +36,7 @@ public class PlayListServiceImpl implements PlayListService {
     }
 
     @Override
-    public List<PlayList> getAllPlaylists() {
+    public List<PlayList> getAllPlaylists() throws PlayListException {
         return playListDAO.getAllPlaylists();
     }
 
@@ -46,7 +46,12 @@ public class PlayListServiceImpl implements PlayListService {
     }
 
     @Override
-    public PlayList getPlayListByName(String playlistName) {
+    public PlayList getPlayListByName(String playlistName) throws PlayListException {
         return playListDAO.getPlayListByName(playlistName);
+    }
+
+    @Override
+    public PlayList removeSongFromPlayList(Long id, Long songsId) throws PlayListException {
+        return playListDAO.removeSongPlayList(id,songsId);
     }
 }

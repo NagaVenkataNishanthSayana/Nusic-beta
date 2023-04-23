@@ -11,13 +11,15 @@ public interface PlayListService {
 
     PlayList createPlaylist(PlayList playlist, Long id) throws PlayListException;
 
-    PlayList updatePlaylist(Long id, PlayList playlist);
+    PlayList updatePlaylist(Long id, PlayList playlist) throws PlayListException;
 
     void deletePlaylist(Long id) throws PlayListException;
 
-    List<PlayList> getAllPlaylists();
+    List<PlayList> getAllPlaylists() throws PlayListException;
 
     PlayList addSongToPlayList(Song song, Long id) throws PlayListException;
 
-    PlayList getPlayListByName(String playlistName);
+    PlayList getPlayListByName(String playlistName) throws PlayListException;
+
+    PlayList removeSongFromPlayList(Long id, Long songsId) throws PlayListException;
 }

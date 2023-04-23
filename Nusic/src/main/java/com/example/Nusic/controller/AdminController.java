@@ -4,7 +4,9 @@ import com.example.Nusic.exception.AdminException;
 import com.example.Nusic.model.Admin;
 import com.example.Nusic.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @RequestMapping("admins")
 public class AdminController {
@@ -13,19 +15,38 @@ public class AdminController {
     AdminService adminService;
 
     @PostMapping("/")
-    public String createAdmin(@RequestBody Admin admin) throws AdminException {
-        adminService.createAdmin(admin);
-        return "Admin Registered";
+    public ModelAndView createAdmin(@RequestBody Admin admin)  {
+        Admin currAdmin=null;
+        try {
+            currAdmin=adminService.createAdmin(admin);
+            return new ModelAndView("SingUp","admin",currAdmin);
+        } catch (AdminException e) {
+            return new ModelAndView("ErrorPage");
+        }
     }
 
     @PostMapping("/")
-    public Admin validateAdminByEmail(@RequestBody String email) throws AdminException {
-        return adminService.getAdminByEmail(email);
+    public ModelAndView validateAdminByEmail(@RequestBody String email)  {
+        Admin admin=null;
+        try {
+            admin=adminService.getAdminByEmail(email);
+            return new ModelAndView("Home","admin",admin);
+        } catch (AdminException e) {
+            return new ModelAndView("ErrorPage");
+        }
+
     }
 
     @PutMapping("/{id}")
-    public String updateAdminDetails(@PathVariable Long id){
-        adminService.updateAdminDetails(id);
-        return "Admin Details updated";
+    public ModelAndView updateAdminDetails(@PathVariable Long id,@RequestBody Admin admin){
+
+        Admin currAdmin=null;
+        try {
+            currAdmin=adminService.updateAdminDetails(id,admin);
+            return new ModelAndView("Home","admin",currAdmin);
+        } catch (AdminException e) {
+            return new ModelAndView("ErrorPage");
+        }
+
     }
 }

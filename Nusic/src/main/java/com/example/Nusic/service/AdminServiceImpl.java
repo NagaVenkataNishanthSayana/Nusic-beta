@@ -12,8 +12,9 @@ public class AdminServiceImpl implements AdminService{
     @Autowired
     AdminDAO adminDAO;
     @Override
-    public void createAdmin(Admin admin) throws AdminException {
-        adminDAO.addAdmin(admin);
+    public Admin createAdmin(Admin admin) throws AdminException {
+
+        return adminDAO.addAdmin(admin);
     }
 
     @Override
@@ -22,7 +23,7 @@ public class AdminServiceImpl implements AdminService{
     }
 
     @Override
-    public void updateAdminDetails(Long id) {
-        adminDAO.updateAdminDetails(id);
+    public Admin updateAdminDetails(Long id, Admin admin) throws AdminException {
+        return adminDAO.updateAdminDetails(id,admin);
     }
 }

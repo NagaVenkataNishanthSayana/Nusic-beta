@@ -66,12 +66,11 @@ public class UserController {
             }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
                     EntityNotFoundException | UnknownSqlException e) {
                 throw e;
-
             } catch (UserException e) {
                 throw new RuntimeException(e);
             }
 
-        }
+    }
 
 
 }

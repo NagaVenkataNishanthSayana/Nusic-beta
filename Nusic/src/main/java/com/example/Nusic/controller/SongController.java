@@ -1,11 +1,12 @@
 package com.example.Nusic.controller;
 
 
-import com.example.Nusic.exception.SongException;
+import com.example.Nusic.exception.*;
 import com.example.Nusic.model.Song;
 import com.example.Nusic.service.SongService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,17 +21,44 @@ public class SongController {
     private SongService songService;
 
     @GetMapping("/{id}")
-    public Song getSongById(@PathVariable Long id) throws SongException {
-        return songService.getSongById(id);
+    public ResponseEntity<Song> getSongById(@PathVariable Long id) {
+        Song song=null;
+        try {
+            song=songService.getSongById(id);
+            return ResponseEntity.ok(song);
+        }catch (ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException e) {
+            throw e;
+        }catch (SongException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping
-    public Song getSongByName(@RequestParam(value = "songName") String songName) throws SongException {
-        return songService.getSongByName(songName);
+    public ResponseEntity<Song> getSongByName(@RequestParam(value = "songName") String songName){
+        Song song=null;
+        try {
+            song=songService.getSongByName(songName);
+            return ResponseEntity.ok(song);
+        }catch (ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException e) {
+            throw e;
+        }catch (SongException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @GetMapping("/")
-    public List<Song> getAllSongs() throws SongException {return songService.getAllSongs();}
+    public ResponseEntity<List<Song>> getAllSongs() {
+
+        List<Song> songs=null;
+        try {
+            songs=songService.getAllSongs();
+            return ResponseEntity.ok(songs);
+        }catch (ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException e) {
+            throw e;
+        }catch (SongException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Song> updateSong(@PathVariable Long id, @RequestBody Song song) {
@@ -38,11 +66,13 @@ public class SongController {
         try {
             currSong=songService.updateSong(id, song);
             return ResponseEntity.ok(currSong);
+        }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException e) {
+            throw e;
         } catch (SongException e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.BAD_GATEWAY).build();
+            throw new RuntimeException(e);
         }
     }
-
 
 }

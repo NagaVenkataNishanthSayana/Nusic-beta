@@ -1,7 +1,6 @@
 package com.example.Nusic.DAO;
 
 import com.example.Nusic.exception.*;
-import com.example.Nusic.model.PlayList;
 import com.example.Nusic.model.User;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,7 +15,6 @@ import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.util.Set;
 
 @Repository
 public class UserDAO extends DAO{
@@ -108,8 +106,7 @@ public class UserDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("User Details not found", e);
-        }
-        catch (Exception e){
+        }catch (Exception e){
             rollback();
             throw new UserException("Error retrieving User Details by email", e);
         }

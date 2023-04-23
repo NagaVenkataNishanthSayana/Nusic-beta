@@ -1,18 +1,28 @@
 package com.example.Nusic.DAO;
 
-import com.example.Nusic.exception.SongException;
+import com.example.Nusic.exception.*;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceException;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
+import org.hibernate.StaleStateException;
+import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.exception.JDBCConnectionException;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Repository
@@ -38,12 +48,32 @@ public class SongDAO extends DAO{
             commit();
             close();
             return songs;
-        }catch (HibernateException e){
+        } catch (ConstraintViolationException e) {
             rollback();
-            throw new SongException("Exception while retrieving all song: " + e.getMessage());
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("Songs Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (Exception e){
+            rollback();
+            throw new SongException("Exception while retrieving all Songs: " + e.getMessage());
 
         }
-
+        return null;
     }
 
     public Song addSongToAlbum(Long albumId, Song song) throws SongException {
@@ -51,16 +81,46 @@ public class SongDAO extends DAO{
         try{
             begin();
             Session session=getSession();
-            song.setAlbum( session.get(Album.class,albumId));
-            session.persist(song);
+            Album album=session.get(Album.class,albumId);
+            song.setAlbum(album);
+            album.getSongs().add(song);
+            session.save(song);
             commit();
             close();
             return song;
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
             rollback();
-            throw new SongException("Exception while adding song: " + e.getMessage());
-
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            } else {
+                throw new DuplicateEntryException("Song already exists", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("Song Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (EntityExistsException e) {
+            rollback();
+            throw new DuplicateEntryException("Song already exists", e);
+        } catch (PersistenceException e) {
+            rollback();
+            throw new DatabaseException("Error executing database operation", e);
+        }catch (Exception e){
+            rollback();
+            throw new SongException("Exception while adding Song: " + e.getMessage());
         }
+        return null;
     }
 
     public Song getSongById(Long id) throws SongException {
@@ -70,18 +130,37 @@ public class SongDAO extends DAO{
             commit();
             close();
             return song;
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
             rollback();
-            throw new SongException("Exception while retrieving all song: " + e.getMessage());
-
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("Song Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (Exception e){
+            rollback();
+            throw new SongException("Error while fetching Song By Name:"+e.getMessage());
         }
+        return null;
     }
 
 
     public Song getSongByName(String songName) throws SongException {
         try{
             begin();
-            String hql="FROM Song as s WHERE s.email= :email";
             CriteriaBuilder cb = getSession().getCriteriaBuilder();
             CriteriaQuery<Song> cr = cb.createQuery(Song.class);
             Root<Song> root = cr.from(Song.class);
@@ -97,9 +176,31 @@ public class SongDAO extends DAO{
 
             return song;
 
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
+            rollback();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
+                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("Song Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (Exception e){
+            rollback();
             throw new SongException("Error while fetching Song By Name:"+e.getMessage());
         }
+        return null;
     }
 
     public Song updateSong(Long id, Song song) throws SongException {
@@ -115,10 +216,36 @@ public class SongDAO extends DAO{
             commit();
             close();
             return currSong;
-        }catch (HibernateException e){
+        } catch (ConstraintViolationException e) {
+            rollback();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("Duplicate entry")) {
+                throw new DuplicateEntryException("Song already exists", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("User Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("Song Details not found", e);
+        }
+        catch (Exception e){
             rollback();
             throw new SongException("Exception while updating Song:"+e.getMessage());
         }
+
+        return null;
 
     }
 }

@@ -4,7 +4,6 @@ import com.example.Nusic.exception.AdminException;
 import com.example.Nusic.model.Admin;
 import com.example.Nusic.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -26,11 +25,11 @@ public class AdminController {
     }
 
     @PostMapping("/")
-    public ModelAndView validateAdminByEmail(@RequestBody String email)  {
-        Admin admin=null;
+    public ModelAndView validateAdminByEmail(@RequestBody Admin admin)  {
+        Admin currAdmin=null;
         try {
-            admin=adminService.getAdminByEmail(email);
-            return new ModelAndView("Home","admin",admin);
+            currAdmin=adminService.validateAdmin(admin);
+            return new ModelAndView("Home","admin",currAdmin);
         } catch (AdminException e) {
             return new ModelAndView("ErrorPage");
         }

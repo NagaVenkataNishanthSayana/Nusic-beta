@@ -86,8 +86,7 @@ public class UserDAO extends DAO{
             close();
             currUser.setPlaylists(null);
             return currUser;
-        }
-        catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException e) {
             rollback();
             Throwable cause = e.getCause();
             if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("Duplicate entry")) {
@@ -146,9 +145,9 @@ public class UserDAO extends DAO{
             rollback();
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
-            } else {
-                throw new UserException("Error retrieving User Details by email", e);
             }
+        }catch (Exception e){
+            throw new UserException("Error retrieving User Details by email", e);
         }
         return null;
     }

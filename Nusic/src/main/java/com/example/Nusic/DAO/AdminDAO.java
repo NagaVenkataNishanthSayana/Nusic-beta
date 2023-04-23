@@ -10,6 +10,7 @@ import org.hibernate.Session;
 import org.hibernate.StaleStateException;
 import org.hibernate.exception.ConstraintViolationException;
 import org.hibernate.exception.JDBCConnectionException;
+import org.hibernate.query.Query;
 import org.springframework.stereotype.Repository;
 
 
@@ -18,12 +19,16 @@ import java.sql.SQLIntegrityConstraintViolationException;
 
 @Repository
 public class AdminDAO extends DAO{
-    public Admin getAdminByEmail(String email) throws AdminException, DatabaseConnectionException {
+    public Admin getAdminByEmail(Admin admin) throws AdminException, DatabaseConnectionException {
         try {
             begin();
-            Admin admin=getSession().find(Admin.class,email);
-
-            return admin;
+            String hql="FROM Admin WHERE email=:email";
+            Query query= getSession().createQuery(hql, Admin.class);
+            query.setParameter("email",admin.getEmail());
+            Admin currAdmin= (Admin) query.getSingleResult();
+            commit();
+            close();
+            return currAdmin;
         }catch (ConstraintViolationException e) {
             rollback();
             Throwable cause = e.getCause();
@@ -43,14 +48,14 @@ public class AdminDAO extends DAO{
             rollback();
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
-            } else {
-                throw new AdminException("Error creating admin", e);
             }
+        }catch (Exception e){
+            throw new AdminException("Error retrieving User Details by email", e);
         }
         return null;
     }
 
-    public Admin addAdmin(Admin admin) throws AdminException, DatabaseConnectionException {
+    public Admin createAdmin(Admin admin) throws AdminException, DatabaseConnectionException {
         try {
             begin();
             getSession().persist(admin);
@@ -78,10 +83,11 @@ public class AdminDAO extends DAO{
             rollback();
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
-            } else {
-                throw new AdminException("Error creating admin", e);
             }
+        }catch (Exception e){
+            throw new AdminException("Error retrieving User Details by email", e);
         }
+        return null;
     }
 
     public Admin updateAdminDetails(Long id,Admin admin) throws AdminException, DatabaseConnectionException {
@@ -95,11 +101,11 @@ public class AdminDAO extends DAO{
             close();
             return currAdmin;
 
-        }catch (ConstraintViolationException e) {
+        } catch (ConstraintViolationException e) {
             rollback();
             Throwable cause = e.getCause();
-            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("foreign key constraint")) {
-                throw new ForeignKeyConstraintException("Foreign key constraint violation", e);
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("Duplicate entry")) {
+                throw new DuplicateEntryException("User already exists", e);
             }
         } catch (JDBCConnectionException e) {
             rollback();
@@ -109,15 +115,17 @@ public class AdminDAO extends DAO{
             throw new OptimisticLockException("Optimistic lock exception", e);
         } catch (ObjectNotFoundException e) {
             rollback();
-            throw new EntityNotFoundException("Entity not found", e);
+            throw new EntityNotFoundException("User Details not found", e);
         } catch (HibernateException e) {
             rollback();
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
-            } else {
-                throw new AdminException("Error creating admin", e);
             }
+        }catch (NullPointerException e){
+            throw new EntityNotFoundException("User Details not found", e);
+        }catch (Exception e){
+            throw new AdminException(e.getMessage(),e);
         }
-        return admin;
+        return null;
     }
 }

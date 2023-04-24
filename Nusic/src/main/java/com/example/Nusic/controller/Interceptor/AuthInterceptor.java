@@ -1,6 +1,7 @@
 package com.example.Nusic.controller.Interceptor;
 
 import com.example.Nusic.exception.UnAuthorizedUserException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -12,10 +13,19 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthInterceptor implements HandlerInterceptor {
 
     private boolean isValidSession(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("SESSION_ID") != null) {
-            String sessionId = session.getAttribute("SESSION_ID").toString();
-            if ("SESSION_ID".equals(sessionId)) {
+        Cookie[] cookies = request.getCookies();
+        String sessionId = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
+                    sessionId = cookie.getValue();
+                    break;
+                }
+            }
+        }
+        if (sessionId != null) {
+            HttpSession session = request.getSession(false);
+            if (session != null && session.getId().equals(sessionId)) {
                 return true;
             }
         }
@@ -26,7 +36,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (!isValidSession(request)) {
-            throw new UnAuthorizedUserException("Un Authorized Session");
+            throw new UnAuthorizedUserException("UnAuthorized Session");
         }
         return true;
     }

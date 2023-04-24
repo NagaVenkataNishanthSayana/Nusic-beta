@@ -82,7 +82,7 @@ public class UserController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
+    public ResponseEntity logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         Cookie[] cookies = request.getCookies();
 
@@ -95,7 +95,7 @@ public class UserController {
             }
         }
         session.invalidate();
-        return ResponseEntity.ok("Logout successful");
+        return ResponseEntity.ok().build();
     }
 
         @PutMapping("/{id}")

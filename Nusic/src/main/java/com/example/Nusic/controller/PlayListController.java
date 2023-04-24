@@ -77,7 +77,7 @@ public class PlayListController {
         }
     }
 
-    @PutMapping("/{id}/songs/{songsId}")
+    @PutMapping("/{id}")
     public ResponseEntity<PlayList> updatePlaylist(@PathVariable Long id, @RequestBody PlayList playlist) {
         try {
             PlayList currPlayList=null;

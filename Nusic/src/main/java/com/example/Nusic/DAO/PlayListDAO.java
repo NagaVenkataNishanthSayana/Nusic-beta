@@ -102,7 +102,7 @@ public class PlayListDAO extends DAO{
             throw new DuplicateEntryException("Playlist already exists", e);
         } catch (PersistenceException e) {
             rollback();
-            throw new DatabaseException("Error executing database operation", e);
+            throw new DuplicateEntryException("Playlist already exists", e);
         }catch (Exception e){
             rollback();
             throw new PlayListException("Error while creating a playlist"+e.getMessage());
@@ -117,10 +117,12 @@ public class PlayListDAO extends DAO{
             PlayList currPlayList=session.get(PlayList.class,id);
             if(playList.getPlayListName()!=null){
                 currPlayList.setPlayListName(playList.getPlayListName());
-                session.merge(currPlayList);
+                currPlayList.setPlayListName(playList.getPlayListName());
             }
+            currPlayList.getSongs().size();
             commit();
             close();
+
             return currPlayList;
         }catch (ConstraintViolationException e) {
             rollback();
@@ -145,7 +147,10 @@ public class PlayListDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("PlayList Details not found", e);
-        }catch (Exception e){
+        }catch (PersistenceException e){
+            throw new DuplicateEntryException("PlayList Name already exists", e);
+        }
+        catch (Exception e){
             rollback();
             throw new PlayListException("Error updating PlayList Details", e);
         }

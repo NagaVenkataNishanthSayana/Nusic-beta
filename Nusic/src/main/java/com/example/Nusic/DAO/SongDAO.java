@@ -129,6 +129,7 @@ public class SongDAO extends DAO{
             Song song = getSession().get(Song.class,id);
             commit();
             close();
+            System.out.println(song);
             return song;
         }catch (ConstraintViolationException e) {
             rollback();
@@ -150,6 +151,9 @@ public class SongDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        } catch (PersistenceException e) {
+            rollback();
+            throw new EntityNotFoundException("No Song Found with such ID", e);
         }catch (Exception e){
             rollback();
             throw new SongException("Error while fetching Song By Name:"+e.getMessage());
@@ -196,6 +200,9 @@ public class SongDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch (PersistenceException e) {
+            rollback();
+            throw new EntityNotFoundException("No Song Found with such Name", e);
         }catch (Exception e){
             rollback();
             throw new SongException("Error while fetching Song By Name:"+e.getMessage());
@@ -210,9 +217,8 @@ public class SongDAO extends DAO{
             if(song!=null){
                 if (song.getSongName()!=null) currSong.setSongName(song.getSongName());
                 if(song.getSongPath()!=null) currSong.setSongPath(song.getSongPath());
+                if(song.getArtists()!=null) currSong.setArtists(song.getArtists());
             }
-            currSong.setSongName(song.getSongName());
-            currSong.setSongPath(song.getSongPath());
             commit();
             close();
             return currSong;

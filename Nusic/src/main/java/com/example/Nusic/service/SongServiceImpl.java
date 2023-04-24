@@ -3,6 +3,7 @@ package com.example.Nusic.service;
 import com.example.Nusic.DAO.SongDAO;
 import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Song;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,9 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public Song getSongById(Long id) throws SongException {
-        return songDAO.getSongById(id);
+        Song song= songDAO.getSongById(id);
+        if(song==null) throw new EntityNotFoundException("Song with this ID not Found");
+        return song;
     }
 
     @Override
@@ -48,6 +51,8 @@ public class SongServiceImpl implements SongService {
 
     @Override
     public Song getSongByName(String songName) throws SongException {
-        return songDAO.getSongByName(songName);
+        Song song= songDAO.getSongByName(songName);
+        if(song==null) throw new EntityNotFoundException("Song with this Name Not Found");
+        return song;
     }
 }

@@ -13,15 +13,13 @@ import java.util.logging.Logger;
 
 @Repository
 public class DAO {
-
     private static final Logger log = Logger.getAnonymousLogger();
     private static final ThreadLocal sessionThread = new ThreadLocal();
 
 
     private static final SessionFactory sessionFactory=HibernateUtil.buildSessionFactory();
 
-    protected DAO() {
-    }
+    protected DAO() {}
 
     public static Session getSession() {
         Session session = (Session) DAO.sessionThread.get();
@@ -30,6 +28,7 @@ public class DAO {
             session = sessionFactory.openSession();
             DAO.sessionThread.set(session);
         }
+
         return session;
     }
 
@@ -47,11 +46,13 @@ public class DAO {
         } catch (HibernateException e) {
             log.log(Level.WARNING, "Cannot rollback", e);
         }
+
         try {
             getSession().close();
         } catch (HibernateException e) {
             log.log(Level.WARNING, "Cannot close", e);
         }
+
         DAO.sessionThread.set(null);
     }
 

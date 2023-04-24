@@ -37,8 +37,17 @@ public class UserController {
     }
 
     @PostMapping("/{id}/playlists")
-    public PlayList createPlaylist(@PathVariable Long id,@RequestBody PlayList playlist) throws PlayListException {
-        return playListService.createPlaylist(playlist,id);
+    public ResponseEntity<PlayList> createPlaylist(@PathVariable Long id,@RequestBody PlayList playlist) {
+        PlayList playList=null;
+        try {
+            playList= playListService.createPlaylist(playlist,id);
+            return ResponseEntity.ok(playList);
+        } catch(DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
+                EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
+            throw e;
+        }catch(PlayListException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @PostMapping("/login")
@@ -68,8 +77,5 @@ public class UserController {
             } catch (UserException e) {
                 throw new RuntimeException(e);
             }
-
     }
-
-
 }

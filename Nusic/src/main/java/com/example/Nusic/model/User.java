@@ -1,31 +1,48 @@
 package com.example.Nusic.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 
 import java.util.Set;
 
 @Entity
+@Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "first_name",nullable = false)
     private String fistName;
+
+    @Column(name = "last_name",nullable = false)
     private String lastname;
+
+    @Column(name ="password",nullable = false)
     private String password;
+
+    @Column(unique=true,nullable = false,length = 50)
     private String email;
 
     //Mappings one-many
-    private Set<Integer> playlists;
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private Set<PlayList> playlists;
 
-    public Set<Integer> getPlaylists() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Set<PlayList> getPlaylists() {
         return playlists;
     }
 
-    public void setPlaylists(Set<Integer> playlists) {
+    public void setPlaylists(Set<PlayList> playlists) {
         this.playlists = playlists;
     }
 

@@ -7,9 +7,16 @@ import com.example.Nusic.service.PlayListService;
 import com.example.Nusic.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/users")
@@ -26,6 +33,7 @@ public class UserController {
         User currUser=null;
         try {
             currUser=userService.saveUser(user);
+            currUser.setPassword(null);
             return ResponseEntity.ok(currUser);
         }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
                  EntityNotFoundException | UnknownSqlException |DatabaseException | PasswordMismatchException e) {
@@ -51,10 +59,19 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> validateUserByEmail(@RequestBody User user) {
+    public ResponseEntity<User> validateUserByEmail(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
         User currUser = null;
         try {
             currUser = userService.validateUser(user);
+            currUser.setPassword(null);
+            HttpSession session = request.getSession();
+            String sessionId = session.getId();
+//            Cookie sessionCookie = new Cookie("SESSION_ID", sessionId);
+//            sessionCookie.setPath("/");
+//            response.addCookie(sessionCookie);
+//            session.setAttribute("SESSION_ID", session.getId());
+//            session.setAttribute("USER", user);
+
             return ResponseEntity.ok(currUser);
         }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
                  EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {

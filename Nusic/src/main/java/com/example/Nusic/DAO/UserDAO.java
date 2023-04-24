@@ -26,11 +26,12 @@ public class UserDAO extends DAO{
         try {
             //save user object in the database
             begin();
-            User currUser= (User) getSession().save(user);
+            Long userId= (Long) getSession().save(user);
             commit();
             close();
 
-            return currUser;
+            user.setId(userId);
+            return user;
         }catch (ConstraintViolationException e) {
             rollback();
             Throwable cause = e.getCause();
@@ -58,7 +59,7 @@ public class UserDAO extends DAO{
             throw new DuplicateEntryException("User already exists", e);
         } catch (PersistenceException e) {
             rollback();
-            throw new DatabaseException("Error executing database operation", e);
+            throw new DuplicateEntryException("User already exists", e);
         }catch (Exception e){
             rollback();
             throw new UserException("Error creating user", e);

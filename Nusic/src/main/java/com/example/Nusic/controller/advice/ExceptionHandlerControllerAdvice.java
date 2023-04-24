@@ -51,4 +51,9 @@ public class ExceptionHandlerControllerAdvice {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(UnAuthorizedUserException.class)
+    public ResponseEntity<String> handlePasswordMismatchException(UnAuthorizedUserException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
 }

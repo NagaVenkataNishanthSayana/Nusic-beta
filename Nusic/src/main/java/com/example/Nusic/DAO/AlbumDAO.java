@@ -221,6 +221,9 @@ public class AlbumDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch (PersistenceException e) {
+            rollback();
+            throw new EntityNotFoundException("Album Details not found", e);
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("Album Details not found", e);
@@ -271,6 +274,9 @@ public class AlbumDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("Album Details not found", e);
+        }catch (PersistenceException e) {
+            rollback();
+            throw new EntityNotFoundException("Album not found", e);
         }catch (Exception e){
             rollback();
             throw new AlbumException("Exception while deleting album:"+e.getMessage());
@@ -283,6 +289,10 @@ public class AlbumDAO extends DAO{
             Session session=getSession();
             Album album=session.get(Album.class,albumId);
             Song song=session.get(Song.class,songId);
+            String sqlQuery="DELETE FROM playlist_tracks WHERE song_id = :songId";
+            Query query = session.createNativeQuery(sqlQuery);
+            query.setParameter("songId", songId);
+            int deletedRows = query.executeUpdate();
             Set<Song> songs=album.getSongs();
             songs.remove(song);
             album.setSongs(songs);
@@ -312,8 +322,10 @@ public class AlbumDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("Album Details not found", e);
-        }
-        catch (Exception e){
+        }catch (PersistenceException e) {
+            rollback();
+            throw new EntityNotFoundException("Song Not Found in this Album", e);
+        }catch (Exception e){
             rollback();
             throw new AlbumException("Error retrieving Album Details by email", e);
         }

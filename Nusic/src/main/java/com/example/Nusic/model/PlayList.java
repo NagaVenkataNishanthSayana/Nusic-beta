@@ -2,7 +2,6 @@ package com.example.Nusic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import org.hibernate.annotations.CascadeType;
 import jakarta.persistence.*;
 
 import java.util.HashSet;
@@ -29,7 +28,7 @@ public class PlayList {
 
     //Mapping one-many
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = CascadeType.MERGE)
     @JoinTable(name = "playlist_tracks",joinColumns = @JoinColumn(name = "playlist_id",nullable = false),inverseJoinColumns = @JoinColumn(name = "song_id",nullable = false))
     Set<Song> songs;
 

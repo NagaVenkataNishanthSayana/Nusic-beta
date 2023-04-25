@@ -130,7 +130,7 @@ public class AlbumController {
         }
     }
 
-    @DeleteMapping("/{id}/songs/{songId}")
+    @DeleteMapping("/{albumId}/songs/{songId}")
     public ResponseEntity deleteSongFromAlbum(@PathVariable Long albumId , @PathVariable Long songId) {
         try {
             albumService.deleteSongFromAlbum(albumId,songId);

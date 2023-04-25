@@ -27,10 +27,11 @@ public class AlbumDAO extends DAO{
         try {
             //save user object in the database
             begin();
-            Album currAlbum= (Album) getSession().save(album);
+            Long albumId= (Long) getSession().save(album);
             commit();
             close();
-            return currAlbum;
+            album.setId(albumId);
+            return album;
 
         }catch (ConstraintViolationException e) {
             rollback();
@@ -235,12 +236,42 @@ public class AlbumDAO extends DAO{
         try {
             begin();
             Album album=getSession().get(Album.class,id);
+
             if(album!=null){
                 getSession().remove(album);
+            }else{
+                commit();
+                close();
+                throw new EntityNotFoundException("Album Details not found with this ID");
             }
             commit();
             close();
-        }catch (HibernateException e){
+        }catch (ConstraintViolationException e) {
+            rollback();
+            Throwable cause = e.getCause();
+            if (cause instanceof SQLIntegrityConstraintViolationException && cause.getMessage().contains("Duplicate entry")) {
+                throw new DuplicateEntryException("Album already exists", e);
+            }
+        } catch (JDBCConnectionException e) {
+            rollback();
+            throw new DatabaseConnectionException("Unable to connect to the database", e);
+        } catch (StaleStateException e) {
+            rollback();
+            throw new OptimisticLockException("Optimistic lock exception", e);
+        } catch (ObjectNotFoundException e) {
+            rollback();
+            throw new EntityNotFoundException("Album Details not found", e);
+        } catch (HibernateException e) {
+            rollback();
+            if (e.getCause() instanceof SQLException) {
+                throw new UnknownSqlException("Unknown SQL exception", e);
+            }
+        }catch (EntityNotFoundException e){
+            throw new EntityNotFoundException("Album Details not found with this ID");
+        }catch (NullPointerException e){
+            rollback();
+            throw new EntityNotFoundException("Album Details not found", e);
+        }catch (Exception e){
             rollback();
             throw new AlbumException("Exception while deleting album:"+e.getMessage());
         }

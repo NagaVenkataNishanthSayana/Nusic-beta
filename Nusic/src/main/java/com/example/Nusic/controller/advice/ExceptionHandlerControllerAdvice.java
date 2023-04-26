@@ -18,10 +18,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(DuplicateEntryException.class)
     public ResponseEntity<Object> handleDuplicateEntryException(DuplicateEntryException e) {
         HttpStatus status = HttpStatus.CONFLICT;
-        String errorCode = ErrorCodeManager.getErrorCode("DuplicateEntryException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Duplicate entry");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -32,10 +29,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(ForeignKeyConstraintException.class)
     public ResponseEntity<Object> handleForeignKeyConstraintException(ForeignKeyConstraintException e) {
         HttpStatus status = HttpStatus.CONFLICT;
-        String errorCode = ErrorCodeManager.getErrorCode("ForeignKeyConstraintException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Foreign key constraint violation");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -46,10 +40,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(DatabaseConnectionException.class)
     public ResponseEntity<Object> handleDatabaseConnectionException(DatabaseConnectionException e) {
         HttpStatus status = HttpStatus.SERVICE_UNAVAILABLE;
-        String errorCode = ErrorCodeManager.getErrorCode("DatabaseConnectionException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Database connection error");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -60,10 +51,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(OptimisticLockException.class)
     public ResponseEntity<Object> handleOptimisticLockException(OptimisticLockException e) {
         HttpStatus status = HttpStatus.CONFLICT;
-        String errorCode = ErrorCodeManager.getErrorCode("OptimisticLockException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Optimistic lock error");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -74,10 +62,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(EntityNotFoundException e) {
         HttpStatus status = HttpStatus.NOT_FOUND;
-        String errorCode = ErrorCodeManager.getErrorCode("EntityNotFoundException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Entity not found");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -88,10 +73,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(UnknownSqlException.class)
     public ResponseEntity<Object> handleUnknownSqlException(UnknownSqlException e) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        String errorCode = ErrorCodeManager.getErrorCode("UnknownSqlException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Unknown SQL error");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -103,10 +85,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(PasswordMismatchException.class)
     public ResponseEntity<Object> handlePasswordMismatchException(PasswordMismatchException e) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        String errorCode = ErrorCodeManager.getErrorCode("PasswordMismatchException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Password mismatch");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -117,10 +96,8 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(DatabaseException.class)
     public ResponseEntity<Object> handleDatabaseException(DatabaseException e) {
         HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-        String errorCode = ErrorCodeManager.getErrorCode("DatabaseException");
 
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Database error");
         responseMap.put("timestamp", LocalDateTime.now());
@@ -131,10 +108,7 @@ public class ExceptionHandlerControllerAdvice {
     @ExceptionHandler(UnAuthorizedUserException.class)
     public ResponseEntity<Object> handleUnAuthorizedUserException(UnAuthorizedUserException e) {
         HttpStatus status = HttpStatus.UNAUTHORIZED;
-        String errorCode = ErrorCodeManager.getErrorCode("UnAuthorizedUserException");
-
         Map<String, Object> responseMap = new HashMap<>();
-        responseMap.put("Error Code", errorCode);
         responseMap.put("msg", e.getMessage());
         responseMap.put("reason", "Unauthorized user");
         responseMap.put("timestamp", LocalDateTime.now());

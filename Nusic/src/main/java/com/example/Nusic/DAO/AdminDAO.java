@@ -4,6 +4,7 @@ import com.example.Nusic.exception.*;
 import com.example.Nusic.model.Admin;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.PersistenceException;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
@@ -49,6 +50,9 @@ public class AdminDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new AdminException("Error retrieving User Details by email", e);
@@ -85,6 +89,9 @@ public class AdminDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new AdminException("Error retrieving User Details by email", e);
@@ -126,6 +133,9 @@ public class AdminDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("User Details not found", e);
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new AdminException(e.getMessage(),e);

@@ -115,4 +115,15 @@ public class ExceptionHandlerControllerAdvice {
 
         return new ResponseEntity<>(responseMap, status);
     }
+
+    @ExceptionHandler(LengthException.class)
+    public ResponseEntity<Object> handleLengthException(LengthException e) {
+        HttpStatus status = HttpStatus.BAD_REQUEST;
+        Map<String, Object> responseMap = new HashMap<>();
+        responseMap.put("msg", e.getMessage());
+        responseMap.put("reason", "Bad Request");
+        responseMap.put("timestamp", LocalDateTime.now());
+
+        return new ResponseEntity<>(responseMap, status);
+    }
 }

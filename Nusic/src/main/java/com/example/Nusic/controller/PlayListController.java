@@ -6,13 +6,19 @@ import com.example.Nusic.model.Song;
 import com.example.Nusic.service.PlayListService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RequestMapping("/playlists")
 public class PlayListController {
 
@@ -20,10 +26,15 @@ public class PlayListController {
     private PlayListService playListService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<PlayList> getPlaylistById(@PathVariable Long id) {
+    public ResponseEntity<PlayList> getPlaylistById(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
         PlayList playList=null;
         try {
             playList=playListService.getPlaylistById(id);
+            HttpSession session = request.getSession();
+            String sessionId = session.getId();
+            Cookie sessionCookie = new Cookie("SESSION_ID", sessionId);
+            sessionCookie.setPath("/");
+            response.addCookie(sessionCookie);
             return ResponseEntity.ok(playList);
         }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException |
                 OptimisticLockException |

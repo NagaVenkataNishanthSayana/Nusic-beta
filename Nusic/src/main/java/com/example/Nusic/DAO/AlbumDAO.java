@@ -57,8 +57,9 @@ public class AlbumDAO extends DAO{
             }
         }catch (EntityExistsException e) {
             throw new DuplicateEntryException("Album already exists", e);
-        } catch (PersistenceException e) {
-            throw new DatabaseException("Error executing database operation", e);
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e) {
             rollback();
             throw new AlbumException("Exception while creating album: " + e.getMessage());
@@ -98,6 +99,9 @@ public class AlbumDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new AlbumException("Exception while retrieving album: " + e.getMessage());
@@ -136,11 +140,14 @@ public class AlbumDAO extends DAO{
         } catch (ObjectNotFoundException e) {
             rollback();
             throw new EntityNotFoundException("Album Details not found", e);
-        } catch (HibernateException e) {
+        }catch (HibernateException e) {
             rollback();
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new AlbumException("Exception while retrieving album: " + e.getMessage());
@@ -148,18 +155,22 @@ public class AlbumDAO extends DAO{
         return null;
     }
 
-    public Album getAlbumByName(String albumName) throws AlbumException {
+    public List<Album> getAlbumsByName(String albumName) throws AlbumException {
         try{
             begin();
-            String hql="FROM Album where albumName=:albumName";
+            if(albumName.length()<3) throw new StringIndexOutOfBoundsException();
+            String hql="FROM Album where albumName LIKE:albumName";
             Query query=getSession().createQuery(hql,Album.class);
-            query.setParameter("albumName",albumName);
-            Album album= (Album) query.getSingleResult();
-            Set<Song> songs=album.getSongs();
-            songs.size();
+            query.setParameter("albumName",albumName + "%");
+            query.setMaxResults(10);
+            List<Album> albums= query.getResultList();
             commit();
             close();
-            return album;
+            for(Album album:albums){
+                System.out.println(album.getAlbumName());
+                album.setSongs(null);
+            }
+            return albums;
         }catch (ConstraintViolationException e) {
             rollback();
             Throwable cause = e.getCause();
@@ -180,6 +191,11 @@ public class AlbumDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
+        }catch (StringIndexOutOfBoundsException e){
+            throw new LengthException("The length of Album name should be at least 3",e);
         }catch (Exception e){
             rollback();
             throw new AlbumException("Error retrieving Album Details by name", e);

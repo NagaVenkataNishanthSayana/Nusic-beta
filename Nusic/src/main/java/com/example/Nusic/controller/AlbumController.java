@@ -18,6 +18,7 @@ import java.util.List;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RequestMapping("/albums")
 public class AlbumController {
 
@@ -47,7 +48,7 @@ public class AlbumController {
         try {
             albums = albumService.getAllAlbums();
             return ResponseEntity.ok(albums);
-        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException | LengthException e) {
             throw e;
         }catch (AlbumException e) {
             e.printStackTrace();
@@ -57,13 +58,13 @@ public class AlbumController {
     }
 
     @GetMapping
-    public ResponseEntity<Album> getAlbumByName(@RequestParam(value = "albumName") String albumName) {
-        Album currAlbum=null;
+    public ResponseEntity<List<Album>> getAlbumsByName(@RequestParam(value = "albumName") String albumName) {
+        List<Album> albums=null;
         try {
-            currAlbum= albumService.getAlbumByName(albumName);
+            albums= albumService.getAlbumByName(albumName);
 
-            return ResponseEntity.ok(currAlbum);
-        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException e) {
+            return ResponseEntity.ok(albums);
+        }catch ( DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | DatabaseException | LengthException e) {
             throw e;
         }catch (AlbumException e) {
             e.printStackTrace();

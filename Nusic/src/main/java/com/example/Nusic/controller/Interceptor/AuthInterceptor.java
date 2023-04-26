@@ -17,7 +17,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         String sessionId = null;
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("JSESSIONID")) {
+                if (cookie.getName().equals("SESSION_ID")) {
                     sessionId = cookie.getValue();
                     break;
                 }

@@ -21,5 +21,5 @@ public interface SongService {
 
     List<Song> getSongByAlbumId(Long id);
 
-    Song getSongByName(String songName) throws SongException;
+    List<Song> getSongsByName(String songName) throws SongException;
 }

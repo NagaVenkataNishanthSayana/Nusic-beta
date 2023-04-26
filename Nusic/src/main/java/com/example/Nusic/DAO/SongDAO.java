@@ -3,13 +3,10 @@ package com.example.Nusic.DAO;
 import com.example.Nusic.exception.*;
 import com.example.Nusic.model.Album;
 import com.example.Nusic.model.Song;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.OptimisticLockException;
-import jakarta.persistence.PersistenceException;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.ParameterExpression;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -68,6 +65,9 @@ public class SongDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new SongException("Exception while retrieving all Songs: " + e.getMessage());
@@ -162,23 +162,26 @@ public class SongDAO extends DAO{
     }
 
 
-    public Song getSongByName(String songName) throws SongException {
+    public List<Song> getSongsByName(String songName) throws SongException {
         try{
             begin();
-            CriteriaBuilder cb = getSession().getCriteriaBuilder();
-            CriteriaQuery<Song> cr = cb.createQuery(Song.class);
-            Root<Song> root = cr.from(Song.class);
-            //Criterion restriction can be implemented as well
-            //Criterion restriction = Restrictions.eq("fieldName", value);
-            //select single column data using restrictions
-            //criteriaQuery.select(projection).where(restriction);
-            cr.select(root).where(cb.like(root.get("songName"), songName));
-            Query<Song> query = getSession().createQuery(cr);
-            Song song=query.getSingleResult();
+            Session session=getSession();
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<Song> query = cb.createQuery(Song.class);
+
+            Root<Song> root = query.from(Song.class);
+            Predicate likeCondition = cb.like(root.get("songName"), songName+ "%");
+
+            query.select(root).where(likeCondition);
+
+            TypedQuery<Song> typedQuery = session.createQuery(query);
+            typedQuery.setMaxResults(10);
+            List<Song> songs=typedQuery.getResultList();
+
             commit();
             close();
 
-            return song;
+            return songs;
 
         }catch (ConstraintViolationException e) {
             rollback();
@@ -195,7 +198,9 @@ public class SongDAO extends DAO{
         } catch (ObjectNotFoundException e) {
             rollback();
             throw new EntityNotFoundException("Song Details not found", e);
-        } catch (HibernateException e) {
+        }catch(StringIndexOutOfBoundsException e){
+            throw new LengthException("Length of the Song Name should be at least 3",e);
+        }catch (HibernateException e) {
             rollback();
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
@@ -245,8 +250,10 @@ public class SongDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("Song Details not found", e);
-        }
-        catch (Exception e){
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
+        }catch (Exception e){
             rollback();
             throw new SongException("Exception while updating Song:"+e.getMessage());
         }

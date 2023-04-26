@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+@RestController
+//@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RequestMapping("/admins")
 public class AdminController {
 
@@ -36,7 +38,7 @@ public class AdminController {
         }
     }
 
-    @PostMapping("/")
+    @PostMapping("/login")
     public ResponseEntity<Admin> validateAdminByEmail(@RequestBody Admin admin, HttpServletRequest request)  {
         Admin currAdmin=null;
         try {

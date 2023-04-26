@@ -57,6 +57,9 @@ public class PlayListDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new PlayListException("Error while fetching Playlist by Id"+e.getMessage());
@@ -148,6 +151,7 @@ public class PlayListDAO extends DAO{
             rollback();
             throw new EntityNotFoundException("PlayList Details not found", e);
         }catch (PersistenceException e){
+            rollback();
             throw new DuplicateEntryException("PlayList Name already exists", e);
         }
         catch (Exception e){
@@ -190,6 +194,9 @@ public class PlayListDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("PlayList Details not found", e);
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new PlayListException("Error while deleting the playlist "+e.getMessage());
@@ -232,6 +239,9 @@ public class PlayListDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("PlayList or Song Details not found", e);
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new PlayListException("Error while getting all playlists:"+e.getMessage());
@@ -276,6 +286,9 @@ public class PlayListDAO extends DAO{
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("PlayList or Song Details not found", e);
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new PlayListException("Error while adding song to Playlist:"+e.getMessage());
@@ -319,6 +332,9 @@ public class PlayListDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new PlayListException("Error while getting playList by name:"+playlistName);
@@ -362,6 +378,9 @@ public class PlayListDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new PlayListException("Error while removing song from PlayList:"+e.getMessage());

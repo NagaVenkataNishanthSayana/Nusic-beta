@@ -16,7 +16,7 @@ public interface AlbumService {
 
     List<Album> getAllAlbums() throws AlbumException;
 
-    Album getAlbumByName(String albumName) throws AlbumException;
+    List<Album> getAlbumByName(String albumName) throws AlbumException;
 
     void deleteSongFromAlbum(Long albumId, Long songId) throws AlbumException;
 }

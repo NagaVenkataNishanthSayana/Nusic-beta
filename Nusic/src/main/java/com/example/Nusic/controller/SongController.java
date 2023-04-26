@@ -7,13 +7,13 @@ import com.example.Nusic.service.SongService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
 @RequestMapping("/songs")
 public class SongController {
 
@@ -34,12 +34,12 @@ public class SongController {
     }
 
     @GetMapping
-    public ResponseEntity<Song> getSongByName(@RequestParam(value = "songName") String songName){
-        Song song=null;
+    public ResponseEntity<List<Song>> getSongByName(@RequestParam(value = "songName") String songName){
+        List<Song> songs=null;
         try {
-            song=songService.getSongByName(songName);
-            return ResponseEntity.ok(song);
-        }catch (ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException e) {
+            songs=songService.getSongsByName(songName);
+            return ResponseEntity.ok(songs);
+        }catch (ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | LengthException e) {
             throw e;
         }catch (SongException e) {
             throw new RuntimeException(e);
@@ -53,7 +53,7 @@ public class SongController {
         try {
             songs=songService.getAllSongs();
             return ResponseEntity.ok(songs);
-        }catch (ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException e) {
+        }catch (ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException | EntityNotFoundException | UnknownSqlException | LengthException e) {
             throw e;
         }catch (SongException e) {
             throw new RuntimeException(e);

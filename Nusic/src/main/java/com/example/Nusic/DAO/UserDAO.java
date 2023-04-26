@@ -104,6 +104,9 @@ public class UserDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (NullPointerException e){
             rollback();
             throw new EntityNotFoundException("User Details not found", e);
@@ -145,6 +148,9 @@ public class UserDAO extends DAO{
             if (e.getCause() instanceof SQLException) {
                 throw new UnknownSqlException("Unknown SQL exception", e);
             }
+        }catch(PersistenceException e){
+            rollback();
+            throw new UnknownSqlException("Duplicate Entry",e);
         }catch (Exception e){
             rollback();
             throw new UserException("Error retrieving User Details by email", e);

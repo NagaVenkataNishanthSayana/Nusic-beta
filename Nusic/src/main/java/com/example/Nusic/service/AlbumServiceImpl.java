@@ -2,7 +2,9 @@ package com.example.Nusic.service;
 
 import com.example.Nusic.DAO.AlbumDAO;
 import com.example.Nusic.exception.AlbumException;
+import com.example.Nusic.exception.LengthException;
 import com.example.Nusic.model.Album;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +42,11 @@ public class AlbumServiceImpl implements AlbumService {
     }
 
     @Override
-    public Album getAlbumByName(String albumName) throws AlbumException {
-        return albumDAO.getAlbumByName(albumName);
+    public List<Album> getAlbumByName(String albumName) throws AlbumException {
+        if(albumName.length()<3) throw new LengthException("The length of Album name should be at least 3");
+        List<Album> albums= albumDAO.getAlbumsByName(albumName);
+        if(albums==null || (albums!=null && albums.size()==0)) throw new EntityNotFoundException("No Album Found with this Name");
+        return albums;
     }
 
     @Override

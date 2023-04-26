@@ -1,6 +1,7 @@
 package com.example.Nusic.service;
 
 import com.example.Nusic.DAO.SongDAO;
+import com.example.Nusic.exception.LengthException;
 import com.example.Nusic.exception.SongException;
 import com.example.Nusic.model.Song;
 import jakarta.persistence.EntityNotFoundException;
@@ -50,9 +51,10 @@ public class SongServiceImpl implements SongService {
     }
 
     @Override
-    public Song getSongByName(String songName) throws SongException {
-        Song song= songDAO.getSongByName(songName);
-        if(song==null) throw new EntityNotFoundException("Song with this Name Not Found");
-        return song;
+    public List<Song> getSongsByName(String songName) throws SongException {
+        if(songName.length()<3) throw new LengthException("Length of the Song Name should be at least 3");
+        List<Song> songs= songDAO.getSongsByName(songName);
+        if(songs==null || (songs!=null && songs.size()==0)) throw new EntityNotFoundException("No Song Found with this Name");
+        return songs;
     }
 }

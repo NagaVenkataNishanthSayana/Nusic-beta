@@ -14,7 +14,7 @@ public class Song {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "song_path",nullable = false,unique = true,length = 50)
+    @Column(name = "song_path",nullable = false,unique = true,length = 100)
     private String songPath;
 
     @Column(name = "song_name",nullable = false, length = 50)

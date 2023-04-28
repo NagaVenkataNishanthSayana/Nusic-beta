@@ -70,6 +70,7 @@ public class UserController {
             currUser.setPassword(null);
             HttpSession session = request.getSession();
             String sessionId = session.getId();
+            System.out.println(sessionId);
 //            Cookie sessionCookie = new Cookie("SESSION_ID", sessionId);
 //            sessionCookie.setPath("/");
 //            response.addCookie(sessionCookie);

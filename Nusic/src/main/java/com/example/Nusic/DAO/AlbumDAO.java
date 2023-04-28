@@ -261,6 +261,13 @@ public class AlbumDAO extends DAO{
         try {
             begin();
             Album album=getSession().get(Album.class,id);
+            String sqlQuery="DELETE FROM playlist_tracks WHERE song_id = :songId";
+            Query query = getSession().createNativeQuery(sqlQuery);
+            Set<Song> songs=album.getSongs();
+            for(Song song:songs){
+                query.setParameter("songId", song.getId());
+                int deletedRows = query.executeUpdate();
+            }
 
             if(album!=null){
                 getSession().remove(album);
@@ -298,7 +305,7 @@ public class AlbumDAO extends DAO{
             throw new EntityNotFoundException("Album Details not found", e);
         }catch (PersistenceException e) {
             rollback();
-            throw new EntityNotFoundException("Album not found", e);
+            throw new EntityNotFoundException("Unkown SQL Error", e);
         }catch (Exception e){
             rollback();
             throw new AlbumException("Exception while deleting album:"+e.getMessage());

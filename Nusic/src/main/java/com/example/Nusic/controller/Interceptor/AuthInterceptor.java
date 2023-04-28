@@ -19,12 +19,14 @@ public class AuthInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals("SESSION_ID")) {
                     sessionId = cookie.getValue();
+                    System.out.println(sessionId);
                     break;
                 }
             }
         }
         if (sessionId != null) {
             HttpSession session = request.getSession(false);
+            if(session==null) System.out.println("Null");
             if (session != null && session.getId().equals(sessionId)) {
                 return true;
             }

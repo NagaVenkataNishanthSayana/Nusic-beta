@@ -13,17 +13,18 @@ import org.springframework.web.servlet.HandlerInterceptor;
 public class AuthInterceptor implements HandlerInterceptor {
 
     private boolean isValidSession(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
+//        Cookie[] cookies = request.getCookies();
         String sessionId = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("SESSION_ID")) {
-                    sessionId = cookie.getValue();
-                    System.out.println(sessionId);
-                    break;
-                }
-            }
-        }
+        sessionId=request.getHeader("SESSION_ID");
+//        if (cookies != null) {
+//            for (Cookie cookie : cookies) {
+//                if (cookie.getName().equals("SESSION_ID")) {
+//                    sessionId = cookie.getValue();
+//                    System.out.println(sessionId);
+//                    break;
+//                }
+//            }
+//        }
         if (sessionId != null) {
             HttpSession session = request.getSession(false);
             if(session==null) System.out.println("Null");

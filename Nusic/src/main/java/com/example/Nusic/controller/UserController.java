@@ -63,13 +63,16 @@ public class UserController {
 
     @CrossOrigin(origins = "http://localhost:3000",exposedHeaders = "Set-Cookie")
     @PostMapping("/login")
-    public ResponseEntity<User> validateUserByEmail(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<Object> validateUserByEmail(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
         User currUser = null;
         try {
             currUser = userService.validateUser(user);
             currUser.setPassword(null);
             HttpSession session = request.getSession();
             String sessionId = session.getId();
+            Map<String,Object> map=new HashMap<>();
+            map.put("SESSION_ID",sessionId);
+            map.put("user",currUser);
             System.out.println(sessionId);
 //            Cookie sessionCookie = new Cookie("SESSION_ID", sessionId);
 //            sessionCookie.setPath("/");
@@ -77,12 +80,12 @@ public class UserController {
             HttpHeaders headers = new HttpHeaders();
 //            headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
 //            headers.add("Access-Control-Allow-Credentials", "true");
-            headers.add("Set-Cookie","SESSION_ID="+sessionId+"; Path=/");
+//            headers.add("Set-Cookie","SESSION_ID="+sessionId+"; Path=/");
 //            response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 //            response.setHeader("Access-Control-Allow-Credentials", "true");
             session.setAttribute("USER", user);
 
-            return ResponseEntity.ok(currUser);
+            return ResponseEntity.ok(map);
         }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
                  EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
             throw e;

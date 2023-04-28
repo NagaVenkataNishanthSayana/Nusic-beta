@@ -26,6 +26,7 @@ public class UserDAO extends DAO{
         try {
             //save user object in the database
             begin();
+            user.setRole("user");
             Long userId= (Long) getSession().save(user);
             commit();
             close();

@@ -36,7 +36,9 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User updateUserDetails(Long id, User user) throws UserException {
-        String encodedPassword = passwordEncoder.encode(user.getPassword());
+
+        String encodedPassword = null;
+        if(user.getPassword()!=null)passwordEncoder.encode(user.getPassword());
         user.setPassword(encodedPassword);
         return userDAO.updateUserDetails(id,user);
     }

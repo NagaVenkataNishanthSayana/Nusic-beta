@@ -26,10 +26,10 @@ public class PlayListController {
     private PlayListService playListService;
 
     @GetMapping("{userId}/playlists/{id}")
-    public ResponseEntity<PlayList> getPlaylistById(@PathVariable Long id) {
+    public ResponseEntity<PlayList> getPlaylistById(@PathVariable Long id, @PathVariable Long userId) {
         PlayList playList=null;
         try {
-            playList=playListService.getPlaylistById(id);
+            playList=playListService.getPlaylistById(id,userId);
             return ResponseEntity.ok(playList);
         }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException |
                 OptimisticLockException |

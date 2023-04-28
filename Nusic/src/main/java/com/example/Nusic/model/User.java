@@ -2,6 +2,11 @@ package com.example.Nusic.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Null;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -13,15 +18,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @NotNull
     @Column(name = "first_name",nullable = false)
     private String fistName;
 
+
+    @NotNull
     @Column(name = "last_name",nullable = false)
     private String lastname;
 
+    @NotNull
     @Column(name ="password",nullable = false)
     private String password;
 
+    @Column(nullable = false , columnDefinition = "VARCHAR(20) DEFAULT 'user'")
+    private String role;
+
+    @NotNull
+    @Email
     @Column(unique=true,nullable = false,length = 50)
     private String email;
 
@@ -36,6 +51,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Set<PlayList> getPlaylists() {

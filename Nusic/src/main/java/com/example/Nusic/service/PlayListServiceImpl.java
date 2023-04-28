@@ -16,7 +16,7 @@ public class PlayListServiceImpl implements PlayListService {
     PlayListDAO playListDAO;
 
     @Override
-    public PlayList getPlaylistById(Long id) throws PlayListException {
+    public PlayList getPlaylistById(Long id, Long userId) throws PlayListException {
         return playListDAO.getPlaylistById(id);
     }
 

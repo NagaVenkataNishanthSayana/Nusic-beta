@@ -207,11 +207,17 @@ public class AlbumDAO extends DAO{
         try {
             begin();
             Album currAlbum=getSession().get(Album.class,id);
+            if(currAlbum==null){
+                commit();
+                close();
+                throw new EntityNotFoundException("Album Details not found with this ID");
+            }
+            currAlbum=  getSession().merge(currAlbum);
             if(album!=null){
                 if(album.getAlbumName()!=null) currAlbum.setAlbumName(album.getAlbumName());
                 if(album.getLeadArtist()!=null) currAlbum.setLeadArtist(album.getLeadArtist());
             }
-
+            getSession().merge(currAlbum);
             Set<Song> songs=currAlbum.getSongs();
             songs.size();
             commit();

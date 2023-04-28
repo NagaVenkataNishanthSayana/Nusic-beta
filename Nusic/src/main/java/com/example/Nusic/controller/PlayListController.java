@@ -18,23 +18,18 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE })
-@RequestMapping("/playlists")
+@CrossOrigin(origins = "http://localhost:3000", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE },allowCredentials = "true")
+@RequestMapping("/users")
 public class PlayListController {
 
     @Autowired
     private PlayListService playListService;
 
-    @GetMapping("/{id}")
-    public ResponseEntity<PlayList> getPlaylistById(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) {
+    @GetMapping("{userId}/playlists/{id}")
+    public ResponseEntity<PlayList> getPlaylistById(@PathVariable Long id) {
         PlayList playList=null;
         try {
             playList=playListService.getPlaylistById(id);
-            HttpSession session = request.getSession();
-            String sessionId = session.getId();
-            Cookie sessionCookie = new Cookie("SESSION_ID", sessionId);
-            sessionCookie.setPath("/");
-            response.addCookie(sessionCookie);
             return ResponseEntity.ok(playList);
         }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException |
                 OptimisticLockException |
@@ -45,11 +40,11 @@ public class PlayListController {
         }
     }
 
-    @GetMapping("/")
-    public ResponseEntity<List<PlayList>> getAllPlaylists() {
+    @GetMapping("{userId}/playlists")
+    public ResponseEntity<List<PlayList>> getAllPlaylists(@PathVariable Long userId) {
         List<PlayList> playLists=null;
         try {
-            playLists= playListService.getAllPlaylists();
+            playLists= playListService.getAllPlaylists(userId);
             return ResponseEntity.ok(playLists);
         }catch (DuplicateEntryException | ForeignKeyConstraintException | DatabaseConnectionException | OptimisticLockException |
                 EntityNotFoundException | UnknownSqlException | PasswordMismatchException e) {
@@ -60,7 +55,7 @@ public class PlayListController {
         }
     }
 
-    @GetMapping
+    @GetMapping("{userId}/playlist")
     public ResponseEntity<PlayList> getPlayListByName(@RequestParam String playlistName)  {
         PlayList playList=null;
         try {
@@ -74,7 +69,7 @@ public class PlayListController {
         }
     }
 
-    @PostMapping("/{id}/songs")
+    @PostMapping("{userId}/playlists/{id}/songs")
     public ResponseEntity<PlayList> addSongToPlayList(@PathVariable Long id, @RequestBody Song song){
         PlayList playList=null;
         try {
@@ -88,7 +83,7 @@ public class PlayListController {
         }
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("{userId}/playlists/{id}")
     public ResponseEntity<PlayList> updatePlaylist(@PathVariable Long id, @RequestBody PlayList playlist) {
         try {
             PlayList currPlayList=null;
@@ -103,7 +98,7 @@ public class PlayListController {
         }
     }
 
-    @DeleteMapping("/{id}/songs/{songsId}")
+    @DeleteMapping("{userId}/playlists/{id}/songs/{songsId}")
     public ResponseEntity<PlayList> removeSongFromPlayList(@PathVariable Long id, @PathVariable Long songsId){
         PlayList currPlayList=null;
         try {
@@ -117,7 +112,7 @@ public class PlayListController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("{userId}/playlists/{id}")
     public void deletePlaylist(@PathVariable Long id){
         try{
             playListService.deletePlaylist(id);

@@ -203,12 +203,13 @@ public class PlayListDAO extends DAO{
         }
     }
 
-    public List<PlayList> getAllPlaylists() throws PlayListException {
+    public List<PlayList> getAllPlaylists(Long userId) throws PlayListException {
         try {
             begin();
             Session session=getSession();
-            String hql="FROM PlayList";
+            String hql="SELECT p FROM PlayList p JOIN p.user u WHERE u.id = :userId";
             Query query=session.createQuery(hql,PlayList.class).setMaxResults(10);
+            query.setParameter("userId",userId);
             List<PlayList> playLists=query.getResultList();
             commit();
             close();

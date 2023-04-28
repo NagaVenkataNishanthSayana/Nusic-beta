@@ -15,7 +15,7 @@ public interface PlayListService {
 
     void deletePlaylist(Long id) throws PlayListException;
 
-    List<PlayList> getAllPlaylists() throws PlayListException;
+    List<PlayList> getAllPlaylists(Long userId) throws PlayListException;
 
     PlayList addSongToPlayList(Song song, Long id) throws PlayListException;
 

@@ -3,9 +3,6 @@ package com.example.Nusic.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Null;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -21,12 +18,12 @@ public class User {
 
     @NotNull
     @Column(name = "first_name",nullable = false)
-    private String fistName;
+    private String firstName;
 
 
     @NotNull
     @Column(name = "last_name",nullable = false)
-    private String lastname;
+    private String lastName;
 
     @NotNull
     @Column(name ="password",nullable = false)
@@ -72,20 +69,20 @@ public class User {
     public User() {
     }
 
-    public String getFistName() {
-        return fistName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFistName(String fistName) {
-        this.fistName = fistName;
+    public void setFirstName(String fistName) {
+        this.firstName = fistName;
     }
 
-    public String getLastname() {
-        return lastname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
+    public void setLastName(String lastname) {
+        this.lastName = lastname;
     }
 
     public String getPassword() {

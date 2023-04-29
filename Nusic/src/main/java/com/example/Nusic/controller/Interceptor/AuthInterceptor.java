@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Enumeration;
+
 @Component
 public class AuthInterceptor implements HandlerInterceptor {
 
@@ -16,6 +18,14 @@ public class AuthInterceptor implements HandlerInterceptor {
 //        Cookie[] cookies = request.getCookies();
         String sessionId = null;
         sessionId=request.getHeader("SESSION_ID");
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            System.out.println(headerName);
+            // use the header value here
+        }
+        System.out.println(sessionId);
 //        if (cookies != null) {
 //            for (Cookie cookie : cookies) {
 //                if (cookie.getName().equals("SESSION_ID")) {

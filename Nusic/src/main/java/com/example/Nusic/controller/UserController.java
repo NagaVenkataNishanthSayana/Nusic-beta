@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +33,10 @@ public class UserController {
     @PostMapping("/")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User currUser=null;
+        System.out.println(user.getFirstName());
+        System.out.println(user.getLastName());
+        System.out.println(user.getEmail());
+        System.out.println(user.getPassword());
         try {
             currUser=userService.saveUser(user);
             currUser.setPassword(null);
@@ -61,7 +64,7 @@ public class UserController {
         }
     }
 
-    @CrossOrigin(origins = "http://localhost:3000",exposedHeaders = "Set-Cookie")
+    @CrossOrigin(origins = "http://localhost:3000",exposedHeaders = "Set-Cookie", allowCredentials = "true")
     @PostMapping("/login")
     public ResponseEntity<Object> validateUserByEmail(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
         User currUser = null;
@@ -74,12 +77,10 @@ public class UserController {
             map.put("SESSION_ID",sessionId);
             map.put("user",currUser);
             System.out.println(sessionId);
-//            Cookie sessionCookie = new Cookie("SESSION_ID", sessionId);
-//            sessionCookie.setPath("/");
-//            response.addCookie(sessionCookie);
+
             HttpHeaders headers = new HttpHeaders();
-//            headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
-//            headers.add("Access-Control-Allow-Credentials", "true");
+            headers.add("Access-Control-Allow-Origin", "http://localhost:3000");
+            headers.add("Access-Control-Allow-Credentials", "true");
 //            headers.add("Set-Cookie","SESSION_ID="+sessionId+"; Path=/");
 //            response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
 //            response.setHeader("Access-Control-Allow-Credentials", "true");

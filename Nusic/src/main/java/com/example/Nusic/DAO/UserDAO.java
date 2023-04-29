@@ -60,7 +60,7 @@ public class UserDAO extends DAO{
             throw new DuplicateEntryException("User already exists", e);
         } catch (PersistenceException e) {
             rollback();
-            throw new DuplicateEntryException("User already exists", e);
+            throw new UnknownSqlException("Unknown SQL Exception",e);
         }catch (Exception e){
             rollback();
             throw new UserException("Error creating user", e);
@@ -74,11 +74,11 @@ public class UserDAO extends DAO{
             User currUser=getSession().get(User.class,id);
             if(currUser==null)
             if(user!=null){
-                String fistName=user.getFistName();
-                String lastName=user.getLastname();
+                String fistName=user.getFirstName();
+                String lastName=user.getLastName();
                 String password= user.getPassword();
-                if(fistName!=null)currUser.setFistName(fistName);
-                if(lastName!=null)currUser.setLastname(lastName);
+                if(fistName!=null)currUser.setFirstName(fistName);
+                if(lastName!=null)currUser.setLastName(lastName);
                 if(password!=null)currUser.setPassword(password);
             }
             commit();

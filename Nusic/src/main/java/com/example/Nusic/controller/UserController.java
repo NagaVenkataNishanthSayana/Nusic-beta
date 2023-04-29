@@ -33,10 +33,6 @@ public class UserController {
     @PostMapping("/")
     public ResponseEntity<User> createUser(@RequestBody User user) {
         User currUser=null;
-        System.out.println(user.getFirstName());
-        System.out.println(user.getLastName());
-        System.out.println(user.getEmail());
-        System.out.println(user.getPassword());
         try {
             currUser=userService.saveUser(user);
             currUser.setPassword(null);
